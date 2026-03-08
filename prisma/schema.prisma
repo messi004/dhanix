@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum DepositStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum WithdrawStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum PoolStatus {
+  ACTIVE
+  COMPLETED
+}
+
+enum TicketStatus {
+  OPEN
+  PENDING
+  CLOSED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAW
+  INTEREST
+  REFERRAL_REWARD
+  WELCOME_BONUS
+}
+
+enum SenderType {
+  USER
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  password     String
+  referralCode String   @unique
+  referredBy   String?
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  wallet       Wallet?
+  deposits     Deposit[]
+  withdrawals  Withdraw[]
+  pools        Pool[]
+  transactions Transaction[]
+  tickets      Ticket[]
+  referralsGiven  Referral[] @relation("Referrer")
+  referralsReceived Referral[] @relation("Referred")
+}
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   Decimal  @default(0) @db.Decimal(18, 8)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Deposit {
+  id        String        @id @default(cuid())
+  userId    String
+  amount    Decimal       @db.Decimal(18, 8)
+  address   String
+  txHash    String?
+  status    DepositStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Withdraw {
+  id            String         @id @default(cuid())
+  userId        String
+  amount        Decimal        @db.Decimal(18, 8)
+  walletAddress String
+  txHash        String?
+  status        WithdrawStatus @default(PENDING)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Pool {
+  id           String     @id @default(cuid())
+  userId       String
+  amount       Decimal    @db.Decimal(18, 8)
+  interestRate Decimal    @db.Decimal(5, 2) @default(12.00)
+  startDate    DateTime   @default(now())
+  endDate      DateTime
+  status       PoolStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Referral {
+  id             String   @id @default(cuid())
+  referrerId     String
+  referredUserId String
+  rewardAmount   Decimal  @db.Decimal(18, 8)
+  createdAt      DateTime @default(now())
+
+  referrer     User @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referredUser User @relation("Referred", fields: [referredUserId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  userId      String
+  type        TransactionType
+  amount      Decimal         @db.Decimal(18, 8)
+  referenceId String?
+  description String?
+  createdAt   DateTime        @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Ticket {
+  id        String       @id @default(cuid())
+  userId    String
+  subject   String
+  status    TicketStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages TicketMessage[]
+}
+
+model TicketMessage {
+  id        String     @id @default(cuid())
+  ticketId  String
+  sender    SenderType
+  message   String
+  createdAt DateTime   @default(now())
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+model Settings {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+
+  @@map("settings")
+}
+
+model Otp {
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, code])
+}

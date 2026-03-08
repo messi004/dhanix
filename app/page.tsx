@@ -1,101 +1,229 @@
-import Image from "next/image";
+import Link from 'next/link'
+import {
+  Shield, TrendingUp, Users, Wallet, ChevronDown, ArrowRight,
+  Zap, Lock, Clock, Gift
+} from 'lucide-react'
+import { getSetting } from '@/lib/settings'
 
-export default function Home() {
+export default async function LandingPage() {
+  const interestRate = await getSetting('interest_rate')
+  const minDuration = parseInt(await getSetting('min_pool_duration_months'))
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div style={{ minHeight: '100vh' }}>
+      {/* Nav */}
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+        background: 'rgba(10,10,15,0.85)', backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid var(--border-color)',
+        padding: '0 24px', height: '70px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        maxWidth: '1200px', margin: '0 auto', width: '100%'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', width: '100%', maxWidth: '1200px', margin: '0 auto', justifyContent: 'space-between' }}>
+          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 10,
+              background: 'var(--accent-gradient)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 900, fontSize: 18, color: 'white'
+            }}>D</div>
+            <span style={{ fontWeight: 800, fontSize: 22, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>Dhanix</span>
+          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Link href="/login" className="btn btn-secondary btn-sm">Login</Link>
+            <Link href="/register" className="btn btn-primary btn-sm">Get Started</Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </nav>
+
+      {/* Hero */}
+      <section style={{
+        minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        textAlign: 'center', padding: '120px 24px 80px',
+        background: 'radial-gradient(ellipse at top, rgba(124,58,237,0.15) 0%, transparent 60%)',
+        position: 'relative', overflow: 'hidden',
+      }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 720 }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '6px 16px', borderRadius: 20,
+            background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.3)',
+            fontSize: 13, fontWeight: 600, color: 'var(--accent-secondary)',
+            marginBottom: 24, animation: 'fadeIn 0.5s ease-out'
+          }}>
+            <Zap size={14} /> Live on BSC Network
+          </div>
+
+          <h1 style={{
+            fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 900,
+            lineHeight: 1.1, marginBottom: 24, letterSpacing: '-1.5px',
+            animation: 'slideUp 0.6s ease-out'
+          }}>
+            Stake USDT.<br />
+            <span style={{ background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Earn {interestRate}% APY.
+            </span>
+          </h1>
+
+          <p style={{
+            fontSize: 18, color: 'var(--text-secondary)',
+            maxWidth: 520, margin: '0 auto 40px', lineHeight: 1.7,
+            animation: 'slideUp 0.7s ease-out'
+          }}>
+            The most secure and rewarding USDT BEP20 staking platform.
+            Start earning passive income with as little as 10 USDT.
+          </p>
+
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', animation: 'slideUp 0.8s ease-out' }}>
+            <Link href="/register" className="btn btn-primary btn-lg">
+              Start Staking <ArrowRight size={18} />
+            </Link>
+            <a href="#how-it-works" className="btn btn-secondary btn-lg">Learn More</a>
+          </div>
+
+          <div style={{
+            display: 'flex', justifyContent: 'center', gap: 40, marginTop: 64,
+            animation: 'fadeIn 1s ease-out',
+          }}>
+            {[
+              { value: `${interestRate}%`, label: 'Annual Return' },
+              { value: '10 USDT', label: 'Min Stake' },
+              { value: '2%', label: 'Referral Reward' },
+            ].map((s, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 28, fontWeight: 800, background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{s.value}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" style={{ padding: '100px 24px', maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 60 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, marginBottom: 12, letterSpacing: '-0.5px' }}>How It Works</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 16, maxWidth: 500, margin: '0 auto' }}>
+            Three simple steps to start earning passive income with Dhanix
+          </p>
+        </div>
+
+        <div className="grid-3">
+          {[
+            { icon: <Wallet size={28} />, title: 'Deposit USDT', desc: 'Send USDT BEP20 to your unique deposit address. Minimum 10 USDT.' },
+            { icon: <Lock size={28} />, title: 'Create a Pool', desc: `Stake your USDT with ${interestRate}% APY. Choose your duration and watch it grow.` },
+            { icon: <TrendingUp size={28} />, title: 'Earn Interest', desc: 'Receive guaranteed interest on your staked amount. Withdraw anytime after maturity.' },
+          ].map((step, i) => (
+            <div key={i} className="card" style={{ textAlign: 'center', padding: 32 }}>
+              <div style={{
+                width: 60, height: 60, borderRadius: 16,
+                background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--accent-secondary)', margin: '0 auto 20px'
+              }}>{step.icon}</div>
+              <div style={{
+                width: 28, height: 28, borderRadius: '50%',
+                background: 'var(--accent-gradient)', color: 'white',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontWeight: 800, fontSize: 14, margin: '0 auto 16px'
+              }}>{i + 1}</div>
+              <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>{step.title}</h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features */}
+      <section style={{ padding: '100px 24px', background: 'var(--bg-secondary)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 60 }}>
+            <h2 style={{ fontSize: 36, fontWeight: 800, marginBottom: 12, letterSpacing: '-0.5px' }}>Why Choose Dhanix?</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 16 }}>Built for security, transparency, and maximum returns</p>
+          </div>
+
+          <div className="grid-2" style={{ gap: 20 }}>
+            {[
+              { icon: <Shield size={24} />, title: 'Bank-Grade Security', desc: 'Your funds are protected with enterprise-grade encryption and secure smart contracts on BSC.' },
+              { icon: <TrendingUp size={24} />, title: `${interestRate}% Annual Return`, desc: 'Industry-leading interest rates on your staked USDT. Transparent and predictable earnings.' },
+              { icon: <Users size={24} />, title: 'Referral Rewards', desc: 'Earn 2% bonus when your referrals make their first stake. Unlimited referral potential.' },
+              { icon: <Gift size={24} />, title: 'Welcome Bonus', desc: 'Get an instant 1% bonus on your very first staking pool. Start earning from day one.' },
+              { icon: <Clock size={24} />, title: 'Flexible Duration', desc: `Minimum ${minDuration}-month staking period. Your principal and interest returned at maturity.` },
+              { icon: <Zap size={24} />, title: 'Instant Operations', desc: 'Auto-detect deposits. Quick withdrawals. Real-time balance updates.' },
+            ].map((f, i) => (
+              <div key={i} className="card" style={{ display: 'flex', gap: 16, padding: 24 }}>
+                <div style={{
+                  width: 48, height: 48, minWidth: 48, borderRadius: 12,
+                  background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'var(--accent-secondary)'
+                }}>{f.icon}</div>
+                <div>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4 }}>{f.title}</h3>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.6 }}>{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section style={{ padding: '100px 24px', maxWidth: 700, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 60 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, marginBottom: 12, letterSpacing: '-0.5px' }}>FAQ</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 16 }}>Frequently asked questions</p>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {[
+            { q: 'What is the minimum deposit?', a: 'The minimum deposit is 10 USDT BEP20. You can deposit up to 1000 USDT per transaction.' },
+            { q: 'How does staking work?', a: `When you create a staking pool, your USDT is locked for the chosen duration. You earn ${interestRate}% annual interest calculated daily. At maturity, your principal plus interest is returned to your wallet.` },
+            { q: 'How do withdrawals work?', a: 'You can withdraw from your wallet balance anytime. Minimum withdrawal is 10 USDT, maximum 1000 USDT. One withdrawal per day is allowed.' },
+            { q: 'How does the referral system work?', a: 'Share your unique referral link. When your referred user creates their first staking pool, you automatically receive a 2% reward based on their stake amount.' },
+            { q: 'Is my money safe?', a: 'Yes. We use enterprise-grade security, encrypted wallets, and operate on the Binance Smart Chain for transparent transactions.' },
+          ].map((faq, i) => (
+            <details key={i} className="card" style={{ cursor: 'pointer' }}>
+              <summary style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                fontWeight: 600, fontSize: 15, listStyle: 'none',
+              }}>
+                {faq.q}
+                <ChevronDown size={18} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+              </summary>
+              <p style={{ marginTop: 12, color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>
+                {faq.a}
+              </p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section style={{
+        padding: '80px 24px', textAlign: 'center',
+        background: 'radial-gradient(ellipse at bottom, rgba(124,58,237,0.15) 0%, transparent 60%)',
+      }}>
+        <h2 style={{ fontSize: 32, fontWeight: 800, marginBottom: 16, letterSpacing: '-0.5px' }}>
+          Ready to Start Earning?
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 16, marginBottom: 32, maxWidth: 450, margin: '0 auto 32px' }}>
+          Join thousands of users earning passive income with Dhanix
+        </p>
+        <Link href="/register" className="btn btn-primary btn-lg">
+          Create Free Account <ArrowRight size={18} />
+        </Link>
+      </section>
+
+      {/* Footer */}
+      <footer style={{
+        padding: '40px 24px', borderTop: '1px solid var(--border-color)',
+        textAlign: 'center', color: 'var(--text-muted)', fontSize: 13,
+      }}>
+        <p style={{ margin: 0, marginBottom: 8 }}>© 2026 Dhanix. All rights reserved. USDT BEP20 Staking Platform.</p>
+        <p style={{ margin: 0 }}>Design & Developed by <a href="https://messidev.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Messi</a></p>
       </footer>
     </div>
-  );
+  )
 }

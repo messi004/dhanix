@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dhanix - USDT BEP20 Staking Platform
 
-## Getting Started
+Dhanix is a fully automated, decentralized-inspired staking platform built primarily over the Binance Smart Chain (BSC) Mainnet. Users can deposit USDT to their assigned unique wallets, create fixed-term staking pools with dynamic APY, and earn guaranteed interest.
 
-First, run the development server:
+## Core Features
+1. **Automated Deposits:** A persistent cron job automatically confirms pending incoming USDT (BEP20) transactions by querying the BSC Mainnet in real-time.
+2. **Dynamic Staking Pools:** Users can configure staking pools for durations equal to or greater than the minimum permitted by the platform's Admin. Interest rates and limits are completely dynamic.
+3. **Automated Interest Payouts:** Another cron job calculates earned APY for mature pools down to the day and automatically credits the user's secure wallet.
+4. **Automated Withdrawals:** Users can withdraw their USDT directly to any BSC wallet, handled securely via an automated dispatcher running via cron.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Tech Stack
+* **Frontend:** Next.js 15 (React 19), App Router, Vanilla CSS
+* **Backend:** Next.js API Routes, NextAuth.js (Credentials Provider)
+* **Database:** PostgreSQL (via Prisma ORM)
+* **Blockchain Integration:** `ethers.js` connected to BSC Mainnet RPC endpoints
+* **Automation:** `node-cron` with `PM2` for resilient background processing (`dhanix-cron`)
+
+---
+
+## Quick Setup Guide
+### Prerequisites
+- Node.js (`v18` or `v20+` recommended)
+- PostgreSQL Database
+- PM2 (Install via `npm i -g pm2`)
+
+### 1. Configure Environment Variables
+Copy `.env.example` to `.env` and fill in the required variables, specifically:
+```env
+# Database
+DATABASE_URL="postgres://user:password@localhost:5432/dhanix"
+
+# NextAuth
+NEXTAUTH_SECRET="your-secret-here"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Blockchain Configuration (BSC Mainnet)
+NETWORK_MODE="mainnet"
+BSC_RPC_URL="https://bsc-dataseed.binance.org/"
+USDT_CONTRACT_ADDRESS="0x55d398326f99059fF775485246999027B3197955"
+
+# Security setup (High Risk)
+MAIN_WALLET_PRIVATE_KEY="YOUR_ADMIN_EXTERNAL_PAYOUT_WALLET_PRIVATE_KEY"
+HD_WALLET_SEED="YOUR_WALLET_GENERATION_MNEMONIC"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Database Commands
+```bash
+# Push schema to the database
+npx prisma db push
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# (Optional) Seed the default settings into the DB
+# (If applicable in your setup, otherwise defaults are dynamically served from lib/settings)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Application Build
+```bash
+# Install Modules
+npm install
 
-## Learn More
+# Build Next.js 
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Running the Platform Locally
+```bash
+npm start
+``` 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 5. Running the Background Workers
+In order to automatically process incoming deposits, pool maturities, and withdrawals, you must run the background cron process. We use `pm2` to ensure it restarts upon failure:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run cron:start
+```
 
-## Deploy on Vercel
+To manage the cron worker:
+```bash
+pm2 logs dhanix-cron     # View all blockchain interaction logs
+pm2 reload dhanix-cron   # Reload after changes
+pm2 stop dhanix-cron     # Pause automation
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Important Security Disclaimers
+* **Store `HD_WALLET_SEED` securely:** Anyone with this seed phrase can access every single deposit wallet generated for your users.
+* **Store `MAIN_WALLET_PRIVATE_KEY` securely:** This wallet dispenses user withdrawals. It must remain funded with enough BNB to cover transaction gas fees. If compromised, funds exist at risk.
+* Avoid commiting `.env`!
+
+## Design & Developed By
+[Messi](https://messidev.vercel.app/)
