@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:cron": "npx tsx scripts/cron.ts",
     "lint": "next lint",
     "cron": "tsx scripts/cron.ts",
     "cron:start": "pm2 start \"npm run cron\" --name \"dhanix-cron\" && pm2 save"
