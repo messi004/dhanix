@@ -14,10 +14,20 @@ export default function WithdrawPage() {
     const [loading, setLoading] = useState(false)
     const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([])
     const [balance, setBalance] = useState('0')
+    const [minWithdraw, setMinWithdraw] = useState('10')
+    const [maxWithdraw, setMaxWithdraw] = useState('1000')
+    const [dailyLimit, setDailyLimit] = useState('1')
 
     useEffect(() => {
         fetch('/api/withdraw').then(r => r.json()).then(d => setWithdrawals(d.withdrawals || []))
         fetch('/api/wallet').then(r => r.json()).then(d => setBalance(d.balance))
+        fetch('/api/settings/public').then(r => r.json()).then(d => {
+            if (d.settings) {
+                setMinWithdraw(d.settings.min_withdraw || '10')
+                setMaxWithdraw(d.settings.max_withdraw || '1000')
+                setDailyLimit(d.settings.withdraw_per_day || '1')
+            }
+        }).catch(err => console.error(err))
     }, [])
 
     const handleWithdraw = async (e: React.FormEvent) => {
@@ -63,7 +73,7 @@ export default function WithdrawPage() {
                     <form onSubmit={handleWithdraw} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <div className="input-group">
                             <label>Amount (USDT)</label>
-                            <input className="input" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Min 10, Max 1000" min="10" max="1000" step="any" required />
+                            <input className="input" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder={`Min ${minWithdraw}, Max ${maxWithdraw}`} min={minWithdraw} max={maxWithdraw} step="any" required />
                         </div>
                         <div className="input-group">
                             <label>Destination Wallet (BEP20)</label>
@@ -74,16 +84,16 @@ export default function WithdrawPage() {
                         </button>
                     </form>
                     <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 12 }}>
-                        • Min: 10 USDT • Max: 1000 USDT • 1 withdrawal per day
+                        • Min: {minWithdraw} USDT • Max: {maxWithdraw} USDT • {dailyLimit} withdrawal(s) per day
                     </div>
                 </div>
 
                 <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     <h3 style={{ fontSize: 16, fontWeight: 700 }}>Withdrawal Rules</h3>
                     {[
-                        { label: 'Minimum', value: '10 USDT' },
-                        { label: 'Maximum', value: '1,000 USDT' },
-                        { label: 'Daily Limit', value: '1 withdrawal' },
+                        { label: 'Minimum', value: `${minWithdraw} USDT` },
+                        { label: 'Maximum', value: `${maxWithdraw} USDT` },
+                        { label: 'Daily Limit', value: `${dailyLimit} withdrawal(s)` },
                         { label: 'Network', value: 'BEP20 (BSC)' },
                         { label: 'Processing', value: 'Automatic' },
                     ].map((r, i) => (

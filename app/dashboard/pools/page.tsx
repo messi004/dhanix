@@ -19,13 +19,20 @@ export default function PoolsPage() {
     const [globalInterestRate, setGlobalInterestRate] = useState('12')
     const [minDuration, setMinDuration] = useState(1)
     const [durationMonths, setDurationMonths] = useState(1)
+    const [minStake, setMinStake] = useState('10')
+    const [maxStake, setMaxStake] = useState('1000')
 
     useEffect(() => {
         Promise.all([
             fetch('/api/pools').then(r => r.json()),
             fetch('/api/wallet').then(r => r.json()),
-        ]).then(([p, w]) => {
+            fetch('/api/settings/public').then(r => r.json()),
+        ]).then(([p, w, s]) => {
             setPools(p.pools || [])
+            if (s.settings) {
+                setMinStake(s.settings.min_stake || '10')
+                setMaxStake(s.settings.max_stake || '1000')
+            }
             setGlobalInterestRate(p.interestRate || '12')
             const minDur = parseInt(p.minPoolDurationMonths) || 1
             setMinDuration(minDur)
@@ -98,13 +105,13 @@ export default function PoolsPage() {
                 <form onSubmit={handleStake} style={{ display: 'flex', gap: 12, alignItems: 'flex-end', flexWrap: 'wrap' }}>
                     <div className="input-group" style={{ flex: 1, minWidth: 200 }}>
                         <label>Stake Amount (USDT)</label>
-                        <input className="input" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Min 10, Max 1000" min="10" max="1000" step="any" required />
+                        <input className="input" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder={`Min ${minStake}, Max ${maxStake}`} min={minStake} max={maxStake} step="any" required />
                     </div>
                     <div className="input-group" style={{ flex: 1, minWidth: 150 }}>
                         <label>Duration (Months)</label>
                         <input className="input" type="number" value={durationMonths} onChange={e => setDurationMonths(parseInt(e.target.value))} min={minDuration} required />
                     </div>
-                    {amount && parseFloat(amount) >= 10 && (
+                    {amount && parseFloat(amount) >= parseFloat(minStake) && (
                         <div style={{ fontSize: 13, color: 'var(--text-secondary)', padding: '12px' }}>
                             Expected interest: <strong style={{ color: 'var(--success)' }}>${(parseFloat(amount) * (parseFloat(globalInterestRate) / 100) * (durationMonths / 12)).toFixed(2)}</strong>
                         </div>

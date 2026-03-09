@@ -13,9 +13,17 @@ export default function DepositPage() {
     const [loading, setLoading] = useState(false)
     const [deposits, setDeposits] = useState<Deposit[]>([])
     const [newDeposit, setNewDeposit] = useState<Deposit | null>(null)
+    const [minDeposit, setMinDeposit] = useState('10')
+    const [maxDeposit, setMaxDeposit] = useState('1000')
 
     useEffect(() => {
         fetch('/api/deposit').then(r => r.json()).then(d => setDeposits(d.deposits || []))
+        fetch('/api/settings/public').then(r => r.json()).then(d => {
+            if (d.settings) {
+                setMinDeposit(d.settings.min_deposit || '10')
+                setMaxDeposit(d.settings.max_deposit || '1000')
+            }
+        }).catch(err => console.error(err))
     }, [])
 
     const handleDeposit = async (e: React.FormEvent) => {
@@ -63,7 +71,7 @@ export default function DepositPage() {
                     <form onSubmit={handleDeposit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <div className="input-group">
                             <label>Amount (USDT)</label>
-                            <input className="input" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Min 10, Max 1000" min="10" max="1000" step="any" required />
+                            <input className="input" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder={`Min ${minDeposit}, Max ${maxDeposit}`} min={minDeposit} max={maxDeposit} step="any" required />
                         </div>
                         <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%' }}>
                             {loading ? <span className="spinner" /> : 'Generate Deposit Address'}
