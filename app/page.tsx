@@ -15,6 +15,14 @@ export default async function LandingPage() {
 
   const interestRate = await getSetting('interest_rate')
   const minDuration = parseInt(await getSetting('min_pool_duration_months'))
+  const minStake = await getSetting('min_stake')
+  const minDeposit = await getSetting('min_deposit')
+  const maxDeposit = await getSetting('max_deposit')
+  const minWithdraw = await getSetting('min_withdraw')
+  const maxWithdraw = await getSetting('max_withdraw')
+  const withdrawPerDay = await getSetting('withdraw_per_day')
+  const referralPercent = await getSetting('referral_percentage')
+  const welcomeBonusPercent = await getSetting('welcome_bonus_percentage')
 
   return (
     <div style={{ minHeight: '100vh', background: '#ffffff' }}>
@@ -79,7 +87,7 @@ export default async function LandingPage() {
             animation: 'slideUp 0.7s ease-out'
           }}>
             The most secure and rewarding USDT BEP20 staking platform.
-            Start earning passive income with as little as 10 USDT.
+            Start earning passive income with as little as {minStake} USDT.
           </p>
 
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', animation: 'slideUp 0.8s ease-out' }}>
@@ -95,8 +103,8 @@ export default async function LandingPage() {
           }}>
             {[
               { value: `${interestRate}%`, label: 'Annual Return' },
-              { value: '10 USDT', label: 'Min Stake' },
-              { value: '2%', label: 'Referral Reward' },
+              { value: `${minStake} USDT`, label: 'Min Stake' },
+              { value: `${referralPercent}%`, label: 'Referral Reward' },
             ].map((s, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 28, fontWeight: 800, background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{s.value}</div>
@@ -118,7 +126,7 @@ export default async function LandingPage() {
 
         <div className="grid-3">
           {[
-            { icon: <Wallet size={28} />, title: 'Deposit USDT', desc: 'Send USDT BEP20 to your unique deposit address. Minimum 10 USDT.' },
+            { icon: <Wallet size={28} />, title: 'Deposit USDT', desc: `Send USDT BEP20 to your unique deposit address. Minimum ${minDeposit} USDT.` },
             { icon: <Lock size={28} />, title: 'Create a Pool', desc: `Stake your USDT with ${interestRate}% APY. Choose your duration and watch it grow.` },
             { icon: <TrendingUp size={28} />, title: 'Earn Interest', desc: 'Receive guaranteed interest on your staked amount. Withdraw anytime after maturity.' },
           ].map((step, i) => (
@@ -154,8 +162,8 @@ export default async function LandingPage() {
             {[
               { icon: <Shield size={24} />, title: 'Bank-Grade Security', desc: 'Your funds are protected with enterprise-grade encryption and secure smart contracts on BSC.' },
               { icon: <TrendingUp size={24} />, title: `${interestRate}% Annual Return`, desc: 'Industry-leading interest rates on your staked USDT. Transparent and predictable earnings.' },
-              { icon: <Users size={24} />, title: 'Referral Rewards', desc: 'Earn 2% bonus when your referrals make their first stake. Unlimited referral potential.' },
-              { icon: <Gift size={24} />, title: 'Welcome Bonus', desc: 'Get an instant 1% bonus on your very first staking pool. Start earning from day one.' },
+              { icon: <Users size={24} />, title: 'Referral Rewards', desc: `Earn ${referralPercent}% bonus when your referrals make their first stake. Unlimited referral potential.` },
+              { icon: <Gift size={24} />, title: 'Welcome Bonus', desc: `Get an instant ${welcomeBonusPercent}% bonus on your very first staking pool. Start earning from day one.` },
               { icon: <Clock size={24} />, title: 'Flexible Duration', desc: `Minimum ${minDuration}-month staking period. Your principal and interest returned at maturity.` },
               { icon: <Zap size={24} />, title: 'Instant Operations', desc: 'Auto-detect deposits. Quick withdrawals. Real-time balance updates.' },
             ].map((f, i) => (
@@ -185,10 +193,10 @@ export default async function LandingPage() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[
-            { q: 'What is the minimum deposit?', a: 'The minimum deposit is 10 USDT BEP20. You can deposit up to 1000 USDT per transaction.' },
+            { q: 'What is the minimum deposit?', a: `The minimum deposit is ${minDeposit} USDT BEP20. You can deposit up to ${maxDeposit} USDT per transaction.` },
             { q: 'How does staking work?', a: `When you create a staking pool, your USDT is locked for the chosen duration. You earn ${interestRate}% annual interest calculated daily. At maturity, your principal plus interest is returned to your wallet.` },
-            { q: 'How do withdrawals work?', a: 'You can withdraw from your wallet balance anytime. Minimum withdrawal is 10 USDT, maximum 1000 USDT. One withdrawal per day is allowed.' },
-            { q: 'How does the referral system work?', a: 'Share your unique referral link. When your referred user creates their first staking pool, you automatically receive a 2% reward based on their stake amount.' },
+            { q: 'How do withdrawals work?', a: `You can withdraw from your wallet balance anytime. Minimum withdrawal is ${minWithdraw} USDT, maximum ${maxWithdraw} USDT. ${withdrawPerDay} withdrawal(s) per day is allowed.` },
+            { q: 'How does the referral system work?', a: `Share your unique referral link. When your referred user creates their first staking pool, you automatically receive a ${referralPercent}% reward based on their stake amount.` },
             { q: 'Is my money safe?', a: 'Yes. We use enterprise-grade security, encrypted wallets, and operate on the Binance Smart Chain for transparent transactions.' },
           ].map((faq, i) => (
             <details key={i} className="card" style={{ cursor: 'pointer' }}>
