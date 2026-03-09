@@ -7,7 +7,7 @@ export async function GET() {
     try {
         const settings = await getSettings()
         return NextResponse.json({ settings })
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed' }, { status: 500 })
     }
 }
