@@ -33,9 +33,27 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FinancialService',
+    name: 'Dhanix Crypto Staking',
+    url: process.env.NEXT_PUBLIC_APP_URL || 'https://dhanix.com',
+    description: 'Earn up to 12% APY on your USDT with Dhanix secure crypto staking platform.',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+      category: 'Crypto Staking'
+    }
+  }
+
   return (
     <html lang="en">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {children}
         <Toaster
           position="top-right"
