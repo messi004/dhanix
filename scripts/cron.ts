@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import { PrismaClient } from '@prisma/client';
 import { ethers } from 'ethers';
+import { sendTransactionNotification } from '../lib/email';
 
 const prisma = new PrismaClient();
 
@@ -40,6 +41,7 @@ cron.schedule('*/2 * * * *', async () => {
         
         const pendingDeposits = await prisma.deposit.findMany({
             where: { status: 'PENDING' },
+            include: { user: true },
         });
 
         if (pendingDeposits.length === 0) {
@@ -74,6 +76,12 @@ cron.schedule('*/2 * * * *', async () => {
                              referenceId: deposit.id, description: `Auto-confirmed Deposit of ${deposit.amount} USDT`,
                          },
                      });
+                     await sendTransactionNotification(
+                         deposit.user.email,
+                         'DEPOSIT',
+                         deposit.amount.toString(),
+                         `Your deposit of ${deposit.amount} USDT has been automatically confirmed by the blockchain and credited to your wallet.`
+                     );
                      console.log(`✅ [DEPOSITS] User wallet credited for deposit ${deposit.id}`);
                 }
             } catch (err) {
@@ -103,6 +111,7 @@ cron.schedule('*/3 * * * *', async () => {
         
         const pendingWithdrawals = await prisma.withdraw.findMany({
             where: { status: 'PENDING' },
+            include: { user: true },
         });
 
         if (pendingWithdrawals.length === 0) {
@@ -128,6 +137,12 @@ cron.schedule('*/3 * * * *', async () => {
                         where: { id: withdrawal.id },
                         data: { status: 'SENT', txHash: tx.hash }
                     });
+                    await sendTransactionNotification(
+                        withdrawal.user.email,
+                        'WITHDRAWAL',
+                        withdrawal.amount.toString(),
+                        `Your withdrawal of ${withdrawal.amount} USDT to address ${withdrawal.walletAddress} has been successfully sent to the blockchain.`
+                    );
                     console.log(`✅ [WITHDRAWALS] Success! txHash: ${tx.hash}`);
                 } else {
                      throw new Error('Transaction reverted by EVM');
@@ -144,6 +159,13 @@ cron.schedule('*/3 * * * *', async () => {
                      where: { userId: withdrawal.userId },
                      data: { balance: { increment: withdrawal.amount } }
                 });
+
+                await sendTransactionNotification(
+                    withdrawal.user.email,
+                    'REJECTED',
+                    withdrawal.amount.toString(),
+                    `Your withdrawal of ${withdrawal.amount} USDT failed to process on the blockchain and the amount has been refunded to your wallet.`
+                );
 
                 console.log(`🔄 [WITHDRAWALS] Refunded ${withdrawal.amount} to user ${withdrawal.userId}.`);
             }
@@ -171,6 +193,7 @@ cron.schedule('0 * * * *', async () => {
                 status: 'ACTIVE',
                 endDate: { lte: now } // End date is in the past or exactly now
             },
+            include: { user: true }
         });
 
         if (activePools.length === 0) {
@@ -187,8 +210,9 @@ cron.schedule('0 * * * *', async () => {
                 const startDate = new Date(pool.startDate);
                 const endDate = new Date(pool.endDate);
                 
-                // Calculate time in years precisely from start to end date
-                const timeInYears = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 365);
+                // Calculate time in years precisely by calendar months to match the frontend promise
+                const months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+                const timeInYears = months / 12;
                 const interestEarned = principal * (annualRate / 100) * timeInYears;
                 const totalPayout = principal + interestEarned;
 
@@ -216,6 +240,13 @@ cron.schedule('0 * * * *', async () => {
                         description: `Pool matured. Principal: ${principal} USDT, Interest: ${interestEarned.toFixed(2)} USDT`,
                     },
                 });
+
+                await sendTransactionNotification(
+                    pool.user.email,
+                    'INTEREST',
+                    totalPayout.toFixed(2),
+                    `Your staking pool of ${principal} USDT has successfully matured! Your principal plus ${interestEarned.toFixed(2)} USDT of interest has been credited to your wallet.`
+                );
 
                 console.log(`✅ [POOLS] Successfully disbursed ${totalPayout.toFixed(2)} USDT to user ${pool.userId}`);
 

@@ -1,6 +1,13 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
 
 export const metadata: Metadata = {
   title: 'Dhanix – Crypto Staking Platform | Earn Up To 12% APY on USDT',
@@ -34,10 +41,11 @@ export default function RootLayout({
           position="top-right"
           toastOptions={{
             style: {
-              background: '#16161f',
-              color: '#f1f1f4',
-              border: '1px solid rgba(255,255,255,0.06)',
+              background: '#ffffff',
+              color: '#1a1a2e',
+              border: '1px solid #e5e7eb',
               borderRadius: '12px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
             },
           }}
         />

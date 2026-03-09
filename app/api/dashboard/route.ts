@@ -21,7 +21,10 @@ export async function GET() {
             prisma.wallet.findUnique({ where: { userId: user.id } }),
             prisma.pool.findMany({ where: { userId: user.id, status: 'ACTIVE' } }),
             prisma.transaction.aggregate({
-                where: { userId: user.id, amount: { gt: 0 } },
+                where: {
+                    userId: user.id,
+                    type: { in: ['INTEREST', 'REFERRAL_REWARD', 'WELCOME_BONUS'] }
+                },
                 _sum: { amount: true },
             }),
             prisma.transaction.aggregate({

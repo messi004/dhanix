@@ -20,7 +20,8 @@ export default function AdminPoolsPage() {
         <div className="animate-fade-in">
             <div className="page-header"><h1>Staking Pools</h1></div>
             <div className="card">
-                <div className="table-container">
+                {/* Desktop table */}
+                <div className="table-container desktop-only">
                     <table>
                         <thead><tr><th>User</th><th>Amount</th><th>APY</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
                         <tbody>
@@ -36,6 +37,26 @@ export default function AdminPoolsPage() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile card list */}
+                <div className="mobile-only" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {pools.map(p => (
+                        <div key={p.id} style={{
+                            padding: 14, borderRadius: 12,
+                            background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                                <span style={{ fontWeight: 700, fontSize: 16 }}>${parseFloat(p.amount).toFixed(2)}</span>
+                                <span className={`badge ${p.status === 'ACTIVE' ? 'badge-success' : 'badge-info'}`}>{p.status}</span>
+                            </div>
+                            <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>{p.user.email}</div>
+                            <div style={{ display: 'flex', gap: 16, fontSize: 12, color: 'var(--text-muted)' }}>
+                                <span>APY: <strong style={{ color: 'var(--text-primary)' }}>{parseFloat(p.interestRate)}%</strong></span>
+                                <span>{new Date(p.startDate).toLocaleDateString()} → {new Date(p.endDate).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

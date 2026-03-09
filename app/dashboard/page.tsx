@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Wallet, Layers, TrendingUp, Users, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 
 interface DashboardData {
@@ -38,6 +39,14 @@ export default function DashboardPage() {
         { icon: <Users size={22} />, label: 'Referral Earnings', value: `$${parseFloat(data?.referralEarnings || '0').toFixed(2)}`, color: '#f59e0b' },
     ]
 
+    const statusBadge = (type: string) => {
+        const map: Record<string, string> = {
+            DEPOSIT: 'badge-success', WITHDRAW: 'badge-warning', STAKED: 'badge-info', INTEREST: 'badge-info',
+            REFERRAL_REWARD: 'badge-success', WELCOME_BONUS: 'badge-info',
+        }
+        return map[type] || 'badge-info'
+    }
+
     return (
         <div className="animate-fade-in">
             <div className="page-header">
@@ -60,50 +69,90 @@ export default function DashboardPage() {
 
             {/* Recent Transactions */}
             <div className="card">
-                <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>Recent Transactions</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                    <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>Recent Transactions</h2>
+                    <Link href="/dashboard/transactions" className="btn btn-secondary btn-sm" style={{ padding: '6px 12px', fontSize: 13 }}>
+                        View All
+                    </Link>
+                </div>
                 {data?.recentTransactions?.length === 0 ? (
                     <div className="empty-state">
                         <div className="empty-icon">📋</div>
                         <p>No transactions yet</p>
                     </div>
                 ) : (
-                    <div className="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Amount</th>
-                                    <th>Description</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data?.recentTransactions?.map(tx => (
-                                    <tr key={tx.id}>
-                                        <td>
-                                            <span className={`badge ${parseFloat(tx.amount) > 0 ? 'badge-success' : 'badge-warning'}`}>
-                                                {tx.type.replace('_', ' ')}
-                                            </span>
-                                        </td>
-                                        <td style={{
-                                            display: 'flex', alignItems: 'center', gap: 4,
+                    <>
+                        {/* Desktop table */}
+                        <div className="table-container desktop-only">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Description</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data?.recentTransactions?.map(tx => (
+                                        <tr key={tx.id}>
+                                            <td>
+                                                <span className={`badge ${statusBadge(tx.type)}`}>
+                                                    {tx.type.replace('_', ' ')}
+                                                </span>
+                                            </td>
+                                            <td style={{
+                                                display: 'flex', alignItems: 'center', gap: 4,
+                                                color: parseFloat(tx.amount) > 0 ? 'var(--success)' : 'var(--danger)',
+                                                fontWeight: 600
+                                            }}>
+                                                {parseFloat(tx.amount) > 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                                                ${Math.abs(parseFloat(tx.amount)).toFixed(2)}
+                                            </td>
+                                            <td style={{ color: 'var(--text-secondary)', maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                {tx.description || '-'}
+                                            </td>
+                                            <td style={{ color: 'var(--text-muted)' }}>
+                                                {new Date(tx.createdAt).toLocaleDateString()}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile card list */}
+                        <div className="mobile-only" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                            {data?.recentTransactions?.map(tx => (
+                                <div key={tx.id} style={{
+                                    padding: 14, borderRadius: 12,
+                                    background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+                                }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                        <span className={`badge ${statusBadge(tx.type)}`}>
+                                            {tx.type.replace('_', ' ')}
+                                        </span>
+                                        <span style={{
+                                            fontWeight: 700, fontSize: 16,
                                             color: parseFloat(tx.amount) > 0 ? 'var(--success)' : 'var(--danger)',
-                                            fontWeight: 600
+                                            display: 'flex', alignItems: 'center', gap: 4,
                                         }}>
                                             {parseFloat(tx.amount) > 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                                             ${Math.abs(parseFloat(tx.amount)).toFixed(2)}
-                                        </td>
-                                        <td style={{ color: 'var(--text-secondary)', maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                            {tx.description || '-'}
-                                        </td>
-                                        <td style={{ color: 'var(--text-muted)' }}>
-                                            {new Date(tx.createdAt).toLocaleDateString()}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                        </span>
+                                    </div>
+                                    {tx.description && (
+                                        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 6, lineHeight: 1.5, wordBreak: 'break-word' }}>
+                                            {tx.description}
+                                        </div>
+                                    )}
+                                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                                        {new Date(tx.createdAt).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

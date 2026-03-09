@@ -45,7 +45,8 @@ export default function AdminTicketsPage() {
         <div className="animate-fade-in">
             <div className="page-header"><h1>Support Tickets</h1></div>
             <div className="card">
-                <div className="table-container">
+                {/* Desktop table */}
+                <div className="table-container desktop-only">
                     <table>
                         <thead><tr><th>User</th><th>Subject</th><th>Messages</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
                         <tbody>
@@ -68,6 +69,32 @@ export default function AdminTicketsPage() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile card list */}
+                <div className="mobile-only" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {tickets.map(t => (
+                        <div key={t.id} style={{
+                            padding: 14, borderRadius: 12,
+                            background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                                <span style={{ fontWeight: 600, fontSize: 14, flex: 1 }}>{t.subject}</span>
+                                <span className={`badge ${statusBadge(t.status)}`} style={{ marginLeft: 8 }}>{t.status}</span>
+                            </div>
+                            <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>{t.user.email}</div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><MessageSquare size={12} /> {t._count.messages} messages</span>
+                                <span>{new Date(t.createdAt).toLocaleDateString()}</span>
+                            </div>
+                            <div style={{ display: 'flex', gap: 8 }}>
+                                <Link href={`/admin/tickets/${t.id}`} className="btn btn-secondary btn-sm" style={{ flex: 1 }}>Reply</Link>
+                                {t.status !== 'CLOSED' && (
+                                    <button onClick={() => closeTicket(t.id)} className="btn btn-danger btn-sm" style={{ flex: 1 }}><XCircle size={14} /> Close</button>
+                                )}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

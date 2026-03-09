@@ -72,7 +72,7 @@ export default function DepositPage() {
                 </div>
 
                 {newDeposit && (
-                    <div className="card" style={{ background: 'rgba(124,58,237,0.05)', border: '1px solid rgba(124,58,237,0.2)' }}>
+                    <div className="card" style={{ background: 'rgba(124,58,237,0.04)', border: '1px solid rgba(124,58,237,0.15)' }}>
                         <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Send USDT BEP20 Here</h3>
                         <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>
                             Amount: <strong style={{ color: 'var(--text-primary)' }}>${parseFloat(newDeposit.amount).toFixed(2)} USDT</strong>

@@ -38,6 +38,7 @@ enum TicketStatus {
 enum TransactionType {
   DEPOSIT
   WITHDRAW
+  STAKED
   INTEREST
   REFERRAL_REWARD
   WELCOME_BONUS

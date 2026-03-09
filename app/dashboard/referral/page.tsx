@@ -57,8 +57,8 @@ export default function ReferralPage() {
             {/* Link Card - Mobile optimized */}
             <div className="card" style={{
                 marginBottom: 24,
-                background: 'linear-gradient(135deg, rgba(124,58,237,0.05), rgba(167,139,250,0.05))',
-                border: '1px solid rgba(124,58,237,0.2)',
+                background: 'linear-gradient(135deg, rgba(124,58,237,0.04), rgba(167,139,250,0.04))',
+                border: '1px solid rgba(124,58,237,0.15)',
             }}>
                 <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Link2 size={18} style={{ color: 'var(--accent-primary)' }} /> Your Referral Link

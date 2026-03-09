@@ -20,12 +20,12 @@ export default function WalletPage() {
 
             <div className="card" style={{
                 textAlign: 'center', padding: 48,
-                background: 'linear-gradient(135deg, rgba(124,58,237,0.05), rgba(167,139,250,0.05))',
-                border: '1px solid rgba(124,58,237,0.2)',
+                background: 'linear-gradient(135deg, rgba(124,58,237,0.04), rgba(167,139,250,0.04))',
+                border: '1px solid rgba(124,58,237,0.15)',
             }}>
                 <WalletIcon size={48} style={{ color: 'var(--accent-secondary)', marginBottom: 16 }} />
                 <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>Available Balance</div>
-                <div style={{ fontSize: 48, fontWeight: 900, letterSpacing: -2, marginBottom: 8 }}>
+                <div className="wallet-balance" style={{ fontSize: 48, fontWeight: 900, letterSpacing: -2, marginBottom: 8 }}>
                     ${parseFloat(balance).toFixed(2)}
                 </div>
                 <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 32 }}>USDT BEP20</div>

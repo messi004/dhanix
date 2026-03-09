@@ -1,26 +1,33 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import {
   Shield, TrendingUp, Users, Wallet, ChevronDown, ArrowRight,
   Zap, Lock, Clock, Gift
 } from 'lucide-react'
 import { getSetting } from '@/lib/settings'
+import { getCurrentUser } from '@/lib/auth'
 
 export default async function LandingPage() {
+  const user = await getCurrentUser()
+  if (user) {
+    redirect('/dashboard')
+  }
+
   const interestRate = await getSetting('interest_rate')
   const minDuration = parseInt(await getSetting('min_pool_duration_months'))
 
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
       {/* Nav */}
-      <nav style={{
+      <nav className="landing-nav" style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        background: 'rgba(10,10,15,0.85)', backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--border-color)',
+        background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid #e5e7eb',
         padding: '0 24px', height: '70px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         maxWidth: '1200px', margin: '0 auto', width: '100%'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', width: '100%', maxWidth: '1200px', margin: '0 auto', justifyContent: 'space-between' }}>
+        <div className="landing-nav-inner" style={{ display: 'flex', alignItems: 'center', gap: '24px', width: '100%', maxWidth: '1200px', margin: '0 auto', justifyContent: 'space-between' }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
               width: 36, height: 36, borderRadius: 10,
@@ -28,7 +35,7 @@ export default async function LandingPage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontWeight: 900, fontSize: 18, color: 'white'
             }}>D</div>
-            <span style={{ fontWeight: 800, fontSize: 22, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>Dhanix</span>
+            <span style={{ fontWeight: 800, fontSize: 22, color: '#1a1a2e', letterSpacing: '-0.5px' }}>Dhanix</span>
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <Link href="/login" className="btn btn-secondary btn-sm">Login</Link>
@@ -41,15 +48,15 @@ export default async function LandingPage() {
       <section style={{
         minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
         textAlign: 'center', padding: '120px 24px 80px',
-        background: 'radial-gradient(ellipse at top, rgba(124,58,237,0.15) 0%, transparent 60%)',
+        background: 'radial-gradient(ellipse at top, rgba(124,58,237,0.08) 0%, transparent 60%)',
         position: 'relative', overflow: 'hidden',
       }}>
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 720 }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
             padding: '6px 16px', borderRadius: 20,
-            background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.3)',
-            fontSize: 13, fontWeight: 600, color: 'var(--accent-secondary)',
+            background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.2)',
+            fontSize: 13, fontWeight: 600, color: 'var(--accent-primary)',
             marginBottom: 24, animation: 'fadeIn 0.5s ease-out'
           }}>
             <Zap size={14} /> Live on BSC Network
@@ -58,7 +65,7 @@ export default async function LandingPage() {
           <h1 style={{
             fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 900,
             lineHeight: 1.1, marginBottom: 24, letterSpacing: '-1.5px',
-            animation: 'slideUp 0.6s ease-out'
+            color: '#1a1a2e', animation: 'slideUp 0.6s ease-out'
           }}>
             Stake USDT.<br />
             <span style={{ background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
@@ -67,7 +74,7 @@ export default async function LandingPage() {
           </h1>
 
           <p style={{
-            fontSize: 18, color: 'var(--text-secondary)',
+            fontSize: 18, color: '#64648b',
             maxWidth: 520, margin: '0 auto 40px', lineHeight: 1.7,
             animation: 'slideUp 0.7s ease-out'
           }}>
@@ -84,7 +91,7 @@ export default async function LandingPage() {
 
           <div style={{
             display: 'flex', justifyContent: 'center', gap: 40, marginTop: 64,
-            animation: 'fadeIn 1s ease-out',
+            animation: 'fadeIn 1s ease-out', flexWrap: 'wrap',
           }}>
             {[
               { value: `${interestRate}%`, label: 'Annual Return' },
@@ -93,7 +100,7 @@ export default async function LandingPage() {
             ].map((s, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 28, fontWeight: 800, background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{s.value}</div>
-                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>{s.label}</div>
+                <div style={{ fontSize: 13, color: '#9ca3af', marginTop: 4 }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -103,8 +110,8 @@ export default async function LandingPage() {
       {/* How It Works */}
       <section id="how-it-works" style={{ padding: '100px 24px', maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 60 }}>
-          <h2 style={{ fontSize: 36, fontWeight: 800, marginBottom: 12, letterSpacing: '-0.5px' }}>How It Works</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 16, maxWidth: 500, margin: '0 auto' }}>
+          <h2 className="landing-section-heading" style={{ fontSize: 36, fontWeight: 800, marginBottom: 12, letterSpacing: '-0.5px', color: '#1a1a2e' }}>How It Works</h2>
+          <p style={{ color: '#64648b', fontSize: 16, maxWidth: 500, margin: '0 auto' }}>
             Three simple steps to start earning passive income with Dhanix
           </p>
         </div>
@@ -118,9 +125,9 @@ export default async function LandingPage() {
             <div key={i} className="card" style={{ textAlign: 'center', padding: 32 }}>
               <div style={{
                 width: 60, height: 60, borderRadius: 16,
-                background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)',
+                background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'var(--accent-secondary)', margin: '0 auto 20px'
+                color: 'var(--accent-primary)', margin: '0 auto 20px'
               }}>{step.icon}</div>
               <div style={{
                 width: 28, height: 28, borderRadius: '50%',
@@ -128,19 +135,19 @@ export default async function LandingPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontWeight: 800, fontSize: 14, margin: '0 auto 16px'
               }}>{i + 1}</div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>{step.title}</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>{step.desc}</p>
+              <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: '#1a1a2e' }}>{step.title}</h3>
+              <p style={{ color: '#64648b', fontSize: 14, lineHeight: 1.7 }}>{step.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Features */}
-      <section style={{ padding: '100px 24px', background: 'var(--bg-secondary)' }}>
+      <section style={{ padding: '100px 24px', background: '#f8f9fc' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 60 }}>
-            <h2 style={{ fontSize: 36, fontWeight: 800, marginBottom: 12, letterSpacing: '-0.5px' }}>Why Choose Dhanix?</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 16 }}>Built for security, transparency, and maximum returns</p>
+            <h2 className="landing-section-heading" style={{ fontSize: 36, fontWeight: 800, marginBottom: 12, letterSpacing: '-0.5px', color: '#1a1a2e' }}>Why Choose Dhanix?</h2>
+            <p style={{ color: '#64648b', fontSize: 16 }}>Built for security, transparency, and maximum returns</p>
           </div>
 
           <div className="grid-2" style={{ gap: 20 }}>
@@ -155,13 +162,13 @@ export default async function LandingPage() {
               <div key={i} className="card" style={{ display: 'flex', gap: 16, padding: 24 }}>
                 <div style={{
                   width: 48, height: 48, minWidth: 48, borderRadius: 12,
-                  background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)',
+                  background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'var(--accent-secondary)'
+                  color: 'var(--accent-primary)'
                 }}>{f.icon}</div>
                 <div>
-                  <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4 }}>{f.title}</h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.6 }}>{f.desc}</p>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4, color: '#1a1a2e' }}>{f.title}</h3>
+                  <p style={{ color: '#64648b', fontSize: 14, lineHeight: 1.6 }}>{f.desc}</p>
                 </div>
               </div>
             ))}
@@ -172,8 +179,8 @@ export default async function LandingPage() {
       {/* FAQ */}
       <section style={{ padding: '100px 24px', maxWidth: 700, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 60 }}>
-          <h2 style={{ fontSize: 36, fontWeight: 800, marginBottom: 12, letterSpacing: '-0.5px' }}>FAQ</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 16 }}>Frequently asked questions</p>
+          <h2 className="landing-section-heading" style={{ fontSize: 36, fontWeight: 800, marginBottom: 12, letterSpacing: '-0.5px', color: '#1a1a2e' }}>FAQ</h2>
+          <p style={{ color: '#64648b', fontSize: 16 }}>Frequently asked questions</p>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -187,12 +194,12 @@ export default async function LandingPage() {
             <details key={i} className="card" style={{ cursor: 'pointer' }}>
               <summary style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                fontWeight: 600, fontSize: 15, listStyle: 'none',
+                fontWeight: 600, fontSize: 15, listStyle: 'none', color: '#1a1a2e',
               }}>
                 {faq.q}
-                <ChevronDown size={18} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                <ChevronDown size={18} style={{ color: '#9ca3af', flexShrink: 0 }} />
               </summary>
-              <p style={{ marginTop: 12, color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>
+              <p style={{ marginTop: 12, color: '#64648b', fontSize: 14, lineHeight: 1.7 }}>
                 {faq.a}
               </p>
             </details>
@@ -203,12 +210,12 @@ export default async function LandingPage() {
       {/* CTA */}
       <section style={{
         padding: '80px 24px', textAlign: 'center',
-        background: 'radial-gradient(ellipse at bottom, rgba(124,58,237,0.15) 0%, transparent 60%)',
+        background: 'radial-gradient(ellipse at bottom, rgba(124,58,237,0.08) 0%, transparent 60%)',
       }}>
-        <h2 style={{ fontSize: 32, fontWeight: 800, marginBottom: 16, letterSpacing: '-0.5px' }}>
+        <h2 className="landing-section-heading" style={{ fontSize: 32, fontWeight: 800, marginBottom: 16, letterSpacing: '-0.5px', color: '#1a1a2e' }}>
           Ready to Start Earning?
         </h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 16, marginBottom: 32, maxWidth: 450, margin: '0 auto 32px' }}>
+        <p style={{ color: '#64648b', fontSize: 16, marginBottom: 32, maxWidth: 450, margin: '0 auto 32px' }}>
           Join thousands of users earning passive income with Dhanix
         </p>
         <Link href="/register" className="btn btn-primary btn-lg">
@@ -218,8 +225,9 @@ export default async function LandingPage() {
 
       {/* Footer */}
       <footer style={{
-        padding: '40px 24px', borderTop: '1px solid var(--border-color)',
-        textAlign: 'center', color: 'var(--text-muted)', fontSize: 13,
+        padding: '40px 24px', borderTop: '1px solid #e5e7eb',
+        textAlign: 'center', color: '#9ca3af', fontSize: 13,
+        background: '#ffffff',
       }}>
         <p style={{ margin: 0, marginBottom: 8 }}>© 2026 Dhanix. All rights reserved. USDT BEP20 Staking Platform.</p>
         <p style={{ margin: 0 }}>Design & Developed by <a href="https://messidev.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Messi</a></p>

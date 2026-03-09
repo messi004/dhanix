@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { getSettings, updateSetting } from '@/lib/settings'
+import { sendTransactionNotification } from '@/lib/email'
 
 // Middleware to check admin
 async function requireAdmin() {
@@ -28,9 +29,9 @@ export async function GET(request: Request) {
             case 'stats': {
                 const [users, deposits, withdrawals, pools, tickets] = await Promise.all([
                     prisma.user.count(),
-                    prisma.deposit.aggregate({ _sum: { amount: true }, _count: true }),
-                    prisma.withdraw.aggregate({ _sum: { amount: true }, _count: true }),
-                    prisma.pool.aggregate({ _sum: { amount: true }, _count: true }),
+                    prisma.deposit.aggregate({ where: { status: 'CONFIRMED' }, _sum: { amount: true }, _count: true }),
+                    prisma.withdraw.aggregate({ where: { status: 'SENT' }, _sum: { amount: true }, _count: true }),
+                    prisma.pool.aggregate({ where: { status: 'ACTIVE' }, _sum: { amount: true }, _count: true }),
                     prisma.ticket.count({ where: { status: { in: ['OPEN', 'PENDING'] } } }),
                 ])
                 return NextResponse.json({
@@ -127,6 +128,7 @@ export async function POST(request: Request) {
                 const deposit = await prisma.deposit.update({
                     where: { id: body.depositId },
                     data: { status: 'CONFIRMED', txHash: body.txHash || 'manual-confirm' },
+                    include: { user: true },
                 })
                 // Credit user wallet
                 await prisma.wallet.update({
@@ -142,25 +144,46 @@ export async function POST(request: Request) {
                         description: `Deposit of ${deposit.amount} USDT confirmed`,
                     },
                 })
+                await sendTransactionNotification(
+                    deposit.user.email,
+                    'DEPOSIT',
+                    deposit.amount.toString(),
+                    `Your deposit of ${deposit.amount} USDT has been manually confirmed and credited to your wallet.`
+                )
                 return NextResponse.json({ message: 'Deposit confirmed' })
             }
             case 'reject-deposit': {
-                await prisma.deposit.update({
+                const deposit = await prisma.deposit.update({
                     where: { id: body.depositId },
                     data: { status: 'FAILED' },
+                    include: { user: true },
                 })
+                await sendTransactionNotification(
+                    deposit.user.email,
+                    'REJECTED',
+                    deposit.amount.toString(),
+                    `Your deposit request of ${deposit.amount} USDT was rejected by the admin. Please verify your transaction details and try again.`
+                )
                 return NextResponse.json({ message: 'Deposit rejected' })
             }
             case 'approve-withdrawal': {
-                await prisma.withdraw.update({
+                const withdrawal = await prisma.withdraw.update({
                     where: { id: body.withdrawalId },
                     data: { status: 'SENT', txHash: body.txHash || 'manual-approve' },
+                    include: { user: true },
                 })
+                await sendTransactionNotification(
+                    withdrawal.user.email,
+                    'WITHDRAWAL',
+                    withdrawal.amount.toString(),
+                    `Your withdrawal of ${withdrawal.amount} USDT to address ${withdrawal.walletAddress} has been approved and sent.`
+                )
                 return NextResponse.json({ message: 'Withdrawal approved' })
             }
             case 'reject-withdrawal': {
                 const withdrawal = await prisma.withdraw.findUnique({
                     where: { id: body.withdrawalId },
+                    include: { user: true },
                 })
                 if (withdrawal) {
                     await prisma.withdraw.update({
@@ -172,6 +195,22 @@ export async function POST(request: Request) {
                         where: { userId: withdrawal.userId },
                         data: { balance: { increment: withdrawal.amount } },
                     })
+                    // Log the refund transaction
+                    await prisma.transaction.create({
+                        data: {
+                            userId: withdrawal.userId,
+                            type: 'DEPOSIT', // Using DEPOSIT as a positive ledger entry for the refund
+                            amount: withdrawal.amount,
+                            referenceId: withdrawal.id,
+                            description: `Refund for rejected withdrawal to ${withdrawal.walletAddress}`,
+                        }
+                    })
+                    await sendTransactionNotification(
+                        withdrawal.user.email,
+                        'REJECTED',
+                        withdrawal.amount.toString(),
+                        `Your withdrawal request of ${withdrawal.amount} USDT to ${withdrawal.walletAddress} was rejected and the amount has been refunded to your Dhanix wallet.`
+                    )
                 }
                 return NextResponse.json({ message: 'Withdrawal rejected and refunded' })
             }

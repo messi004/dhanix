@@ -77,8 +77,8 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
                         }}>
                             <div style={{
                                 maxWidth: '75%', padding: '10px 14px', borderRadius: 12,
-                                background: msg.sender === 'ADMIN' ? 'var(--bg-primary)' : 'rgba(124,58,237,0.1)',
-                                border: `1px solid ${msg.sender === 'ADMIN' ? 'var(--border-color)' : 'rgba(124,58,237,0.2)'}`,
+                                background: msg.sender === 'ADMIN' ? 'var(--bg-secondary)' : 'rgba(124,58,237,0.06)',
+                                border: `1px solid ${msg.sender === 'ADMIN' ? 'var(--border-color)' : 'rgba(124,58,237,0.15)'}`,
                             }}>
                                 <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4, fontWeight: 600 }}>
                                     {msg.sender === 'ADMIN' ? '🛡️ Admin' : 'You'}

@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { getSetting } from '@/lib/settings'
+import { sendTransactionNotification } from '@/lib/email'
 import { poolSchema } from '@/lib/validations'
 import { getMaturityDate, calculateSimpleInterest } from '@/lib/interest'
 
@@ -126,12 +127,19 @@ export async function POST(request: Request) {
         await prisma.transaction.create({
             data: {
                 userId: user.id,
-                type: 'WITHDRAW',
+                type: 'STAKED',
                 amount: -amount,
                 referenceId: pool.id,
                 description: `Staked ${amount} USDT for ${durationMonths} month(s)`,
             },
         })
+
+        await sendTransactionNotification(
+            user.email,
+            'STAKED',
+            amount.toString(),
+            `You have successfully staked ${amount} USDT for a duration of ${durationMonths} month(s).`
+        )
 
         // Apply welcome bonus on first pool
         if (isFirstPool) {
@@ -149,37 +157,58 @@ export async function POST(request: Request) {
                     description: `Welcome bonus ${welcomeBonusPercentage}% on first stake`,
                 },
             })
+            await sendTransactionNotification(
+                user.email,
+                'WELCOME',
+                bonusAmount.toString(),
+                `Congratulations! You received a ${welcomeBonusPercentage}% welcome bonus on your first stake.`
+            )
         }
 
         // Apply referral reward on first pool
         if (isFirstPool && user.referredBy) {
             const rewardAmount = amount * (referralPercentage / 100)
 
-            // Credit referrer
-            await prisma.wallet.update({
-                where: { userId: user.referredBy },
-                data: { balance: { increment: rewardAmount } },
+            // Fetch referrer to get their email
+            const referrerUser = await prisma.user.findUnique({
+                where: { id: user.referredBy },
+                select: { email: true }
             })
 
-            // Record referral
-            await prisma.referral.create({
-                data: {
-                    referrerId: user.referredBy,
-                    referredUserId: user.id,
-                    rewardAmount,
-                },
-            })
+            if (referrerUser) {
+                // Credit referrer
+                await prisma.wallet.update({
+                    where: { userId: user.referredBy },
+                    data: { balance: { increment: rewardAmount } },
+                })
 
-            // Record transaction for referrer
-            await prisma.transaction.create({
-                data: {
-                    userId: user.referredBy,
-                    type: 'REFERRAL_REWARD',
-                    amount: rewardAmount,
-                    referenceId: pool.id,
-                    description: `Referral reward from ${user.email}'s first stake`,
-                },
-            })
+                // Record referral
+                await prisma.referral.create({
+                    data: {
+                        referrerId: user.referredBy,
+                        referredUserId: user.id,
+                        rewardAmount,
+                    },
+                })
+
+                // Record transaction for referrer
+                await prisma.transaction.create({
+                    data: {
+                        userId: user.referredBy,
+                        type: 'REFERRAL_REWARD',
+                        amount: rewardAmount,
+                        referenceId: pool.id,
+                        description: `Referral reward from ${user.email}'s first stake`,
+                    },
+                })
+
+                await sendTransactionNotification(
+                    referrerUser.email,
+                    'REFERRAL',
+                    rewardAmount.toString(),
+                    `Great news! You received a referral reward from your friend's first stake.`
+                )
+            }
         }
 
         const expectedInterest = calculateSimpleInterest(amount, interestRate, durationMonths)

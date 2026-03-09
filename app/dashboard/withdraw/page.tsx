@@ -57,7 +57,7 @@ export default function WithdrawPage() {
                     <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                         <ArrowUpCircle size={18} style={{ color: 'var(--accent-primary)' }} /> New Withdrawal
                     </h3>
-                    <div style={{ padding: '10px 14px', background: 'var(--bg-primary)', borderRadius: 10, marginBottom: 16, fontSize: 13 }}>
+                    <div style={{ padding: '10px 14px', background: 'var(--bg-secondary)', borderRadius: 10, marginBottom: 16, fontSize: 13 }}>
                         Available: <strong style={{ color: 'var(--success)' }}>${parseFloat(balance).toFixed(2)} USDT</strong>
                     </div>
                     <form onSubmit={handleWithdraw} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -100,26 +100,55 @@ export default function WithdrawPage() {
                 {withdrawals.length === 0 ? (
                     <div className="empty-state"><p>No withdrawals yet</p></div>
                 ) : (
-                    <div className="table-container">
-                        <table>
-                            <thead><tr><th>Amount</th><th>Address</th><th>Status</th><th>TxHash</th><th>Date</th></tr></thead>
-                            <tbody>
-                                {withdrawals.map(w => (
-                                    <tr key={w.id}>
-                                        <td style={{ fontWeight: 600 }}>${parseFloat(w.amount).toFixed(2)}</td>
-                                        <td style={{ fontFamily: 'monospace', fontSize: 12 }}>{w.walletAddress.slice(0, 10)}...{w.walletAddress.slice(-6)}</td>
-                                        <td><span className={`badge ${statusBadge(w.status)}`}>{w.status}</span></td>
-                                        <td>{w.txHash ? (
-                                            <a href={`https://bscscan.com/tx/${w.txHash}`} target="_blank" rel="noopener" style={{ color: 'var(--accent-secondary)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                                View <ExternalLink size={12} />
+                    <>
+                        {/* Desktop table */}
+                        <div className="table-container desktop-only">
+                            <table>
+                                <thead><tr><th>Amount</th><th>Address</th><th>Status</th><th>TxHash</th><th>Date</th></tr></thead>
+                                <tbody>
+                                    {withdrawals.map(w => (
+                                        <tr key={w.id}>
+                                            <td style={{ fontWeight: 600 }}>${parseFloat(w.amount).toFixed(2)}</td>
+                                            <td style={{ fontFamily: 'monospace', fontSize: 12 }}>{w.walletAddress.slice(0, 10)}...{w.walletAddress.slice(-6)}</td>
+                                            <td><span className={`badge ${statusBadge(w.status)}`}>{w.status}</span></td>
+                                            <td>{w.txHash ? (
+                                                <a href={`https://bscscan.com/tx/${w.txHash}`} target="_blank" rel="noopener" style={{ color: 'var(--accent-secondary)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                                    View <ExternalLink size={12} />
+                                                </a>
+                                            ) : '-'}</td>
+                                            <td style={{ color: 'var(--text-muted)' }}>{new Date(w.createdAt).toLocaleDateString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile card list */}
+                        <div className="mobile-only" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                            {withdrawals.map(w => (
+                                <div key={w.id} style={{
+                                    padding: 14, borderRadius: 12,
+                                    background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+                                }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                        <span style={{ fontWeight: 700, fontSize: 16 }}>${parseFloat(w.amount).toFixed(2)}</span>
+                                        <span className={`badge ${statusBadge(w.status)}`}>{w.status}</span>
+                                    </div>
+                                    <div style={{ fontSize: 11, fontFamily: 'monospace', color: 'var(--text-secondary)', wordBreak: 'break-all', marginBottom: 6 }}>
+                                        {w.walletAddress.slice(0, 14)}...{w.walletAddress.slice(-8)}
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: 'var(--text-muted)' }}>
+                                        <span>{new Date(w.createdAt).toLocaleDateString()}</span>
+                                        {w.txHash ? (
+                                            <a href={`https://bscscan.com/tx/${w.txHash}`} target="_blank" rel="noopener" style={{ color: 'var(--accent-secondary)', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12 }}>
+                                                View Tx <ExternalLink size={12} />
                                             </a>
-                                        ) : '-'}</td>
-                                        <td style={{ color: 'var(--text-muted)' }}>{new Date(w.createdAt).toLocaleDateString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { hashPassword, signToken, generateReferralCode } from '@/lib/auth'
 import { registerSchema } from '@/lib/validations'
+import { sendWelcomeEmail } from '@/lib/email'
 
 export async function POST(request: Request) {
     try {
@@ -91,6 +92,9 @@ export async function POST(request: Request) {
 
         // Cleanup OTPs for this email
         await prisma.otp.deleteMany({ where: { email } })
+
+        // Send Welcome Email asynchronously
+        sendWelcomeEmail(email).catch(err => console.error("Failed to send welcome email:", err))
 
         const token = signToken({
             userId: user.id,

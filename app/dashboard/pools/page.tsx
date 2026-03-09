@@ -70,8 +70,10 @@ export default function PoolsPage() {
     const calcInterest = (amt: string, rate: string, start: string, end: string) => {
         const principal = parseFloat(amt)
         const r = parseFloat(rate) / 100
-        const months = Math.ceil((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 60 * 60 * 24 * 30))
-        return (principal * r * months / 12).toFixed(2)
+        const d1 = new Date(start)
+        const d2 = new Date(end)
+        const months = (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth())
+        return (principal * r * (months / 12)).toFixed(2)
     }
 
     if (fetchLoading) return <div className="loading-page"><div className="spinner" /></div>
@@ -88,7 +90,7 @@ export default function PoolsPage() {
                 <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Layers size={18} style={{ color: 'var(--accent-primary)' }} /> Create New Pool
                 </h3>
-                <div style={{ padding: '10px 14px', background: 'var(--bg-primary)', borderRadius: 10, marginBottom: 16, fontSize: 13 }}>
+                <div className="pool-info-bar" style={{ padding: '10px 14px', background: 'var(--bg-primary)', borderRadius: 10, marginBottom: 16, fontSize: 13 }}>
                     Available: <strong style={{ color: 'var(--success)' }}>${parseFloat(balance).toFixed(2)} USDT</strong>
                     &nbsp;&nbsp;•&nbsp;&nbsp; APY: <strong style={{ color: 'var(--accent-secondary)' }}>{globalInterestRate}%</strong>
                     &nbsp;&nbsp;•&nbsp;&nbsp; Min Duration: <strong>{minDuration} {minDuration === 1 ? 'month' : 'months'}</strong>
@@ -157,27 +159,56 @@ export default function PoolsPage() {
                     <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                         <CheckCircle size={18} style={{ color: 'var(--success)' }} /> Completed Pools ({completedPools.length})
                     </h2>
-                    <div className="table-container">
-                        <table>
-                            <thead><tr><th>Amount</th><th>APY</th><th>Interest</th><th>Total Return</th><th>Duration</th></tr></thead>
-                            <tbody>
-                                {completedPools.map(p => {
-                                    const interest = calcInterest(p.amount, p.interestRate, p.startDate, p.endDate)
-                                    return (
-                                        <tr key={p.id}>
-                                            <td style={{ fontWeight: 600 }}>${parseFloat(p.amount).toFixed(2)}</td>
-                                            <td>{parseFloat(p.interestRate)}%</td>
-                                            <td style={{ color: 'var(--success)' }}>${interest}</td>
-                                            <td style={{ fontWeight: 600 }}>${(parseFloat(p.amount) + parseFloat(interest)).toFixed(2)}</td>
-                                            <td style={{ color: 'var(--text-muted)' }}>
-                                                {new Date(p.startDate).toLocaleDateString()} - {new Date(p.endDate).toLocaleDateString()}
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
+                    <>
+                        {/* Desktop table */}
+                        <div className="table-container desktop-only">
+                            <table>
+                                <thead><tr><th>Amount</th><th>APY</th><th>Interest</th><th>Total Return</th><th>Duration</th></tr></thead>
+                                <tbody>
+                                    {completedPools.map(p => {
+                                        const interest = calcInterest(p.amount, p.interestRate, p.startDate, p.endDate)
+                                        return (
+                                            <tr key={p.id}>
+                                                <td style={{ fontWeight: 600 }}>${parseFloat(p.amount).toFixed(2)}</td>
+                                                <td>{parseFloat(p.interestRate)}%</td>
+                                                <td style={{ color: 'var(--success)' }}>${interest}</td>
+                                                <td style={{ fontWeight: 600 }}>${(parseFloat(p.amount) + parseFloat(interest)).toFixed(2)}</td>
+                                                <td style={{ color: 'var(--text-muted)' }}>
+                                                    {new Date(p.startDate).toLocaleDateString()} - {new Date(p.endDate).toLocaleDateString()}
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile card list */}
+                        <div className="mobile-only" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                            {completedPools.map(p => {
+                                const interest = calcInterest(p.amount, p.interestRate, p.startDate, p.endDate)
+                                return (
+                                    <div key={p.id} style={{
+                                        padding: 14, borderRadius: 12,
+                                        background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+                                    }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                            <span style={{ fontWeight: 700, fontSize: 16 }}>${parseFloat(p.amount).toFixed(2)}</span>
+                                            <span className="badge badge-info">COMPLETED</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--text-secondary)', marginBottom: 6, flexWrap: 'wrap' }}>
+                                            <span>APY: <strong style={{ color: 'var(--text-primary)' }}>{parseFloat(p.interestRate)}%</strong></span>
+                                            <span>Interest: <strong style={{ color: 'var(--success)' }}>${interest}</strong></span>
+                                            <span>Return: <strong style={{ color: 'var(--text-primary)' }}>${(parseFloat(p.amount) + parseFloat(interest)).toFixed(2)}</strong></span>
+                                        </div>
+                                        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                                            {new Date(p.startDate).toLocaleDateString()} → {new Date(p.endDate).toLocaleDateString()}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </>
                 </>
             )}
         </div>

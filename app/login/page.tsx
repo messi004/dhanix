@@ -83,7 +83,7 @@ export default function LoginPage() {
     return (
         <div style={{
             minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: 24, background: 'radial-gradient(ellipse at top, rgba(124,58,237,0.1) 0%, transparent 50%)',
+            padding: 24, background: 'radial-gradient(ellipse at top, rgba(124,58,237,0.06) 0%, #f8f9fc 50%)',
         }}>
             <div className="card animate-fade-in" style={{ width: '100%', maxWidth: 420, padding: 32 }}>
                 <div style={{ textAlign: 'center', marginBottom: 32 }}>

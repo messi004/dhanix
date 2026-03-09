@@ -91,8 +91,8 @@ export default function AdminTicketDetailPage({ params }: { params: { id: string
                         }}>
                             <div style={{
                                 maxWidth: '75%', padding: '10px 14px', borderRadius: 12,
-                                background: msg.sender === 'ADMIN' ? 'rgba(124,58,237,0.1)' : 'var(--bg-primary)',
-                                border: `1px solid ${msg.sender === 'ADMIN' ? 'rgba(124,58,237,0.2)' : 'var(--border-color)'}`,
+                                background: msg.sender === 'ADMIN' ? 'rgba(124,58,237,0.06)' : 'var(--bg-secondary)',
+                                border: `1px solid ${msg.sender === 'ADMIN' ? 'rgba(124,58,237,0.15)' : 'var(--border-color)'}`,
                             }}>
                                 <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4, fontWeight: 600 }}>
                                     {msg.sender === 'ADMIN' ? 'You (Admin)' : 'User'}

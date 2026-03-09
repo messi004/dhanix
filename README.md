@@ -35,6 +35,12 @@ DATABASE_URL="postgres://user:password@localhost:5432/dhanix"
 NEXTAUTH_SECRET="your-secret-here"
 NEXTAUTH_URL="http://localhost:3000"
 
+# Email Configuration (SMTP)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+
 # Blockchain Configuration (BSC Mainnet)
 NETWORK_MODE="mainnet"
 BSC_RPC_URL="https://bsc-dataseed.binance.org/"

@@ -60,17 +60,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh' }}>
-            {sidebarOpen && <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }} />}
+            {sidebarOpen && <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 40 }} />}
 
             <aside style={{
-                width: 260, background: 'var(--bg-secondary)',
-                borderRight: '1px solid var(--border-color)',
+                width: 260, background: '#ffffff',
+                borderRight: '1px solid #e5e7eb',
                 display: 'flex', flexDirection: 'column',
                 position: 'fixed', top: 0, bottom: 0, left: sidebarOpen ? 0 : -260,
                 zIndex: 50, transition: 'left 0.3s ease',
             }} className="admin-sidebar">
                 <div style={{
-                    padding: '20px', borderBottom: '1px solid var(--border-color)',
+                    padding: '20px', borderBottom: '1px solid #e5e7eb',
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -81,12 +81,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             color: 'white'
                         }}><Shield size={18} /></div>
                         <div>
-                            <div style={{ fontWeight: 800, fontSize: 16 }}>Dhanix</div>
+                            <div style={{ fontWeight: 800, fontSize: 16, color: '#1a1a2e' }}>Dhanix</div>
                             <div style={{ fontSize: 11, color: 'var(--danger)', fontWeight: 600 }}>ADMIN PANEL</div>
                         </div>
                     </div>
                     <button onClick={() => setSidebarOpen(false)} style={{
-                        background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
+                        background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer',
                         display: 'none'
                     }} className="admin-sidebar-close"><X size={20} /></button>
                 </div>
@@ -100,39 +100,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 display: 'flex', alignItems: 'center', gap: 12,
                                 padding: '10px 14px', borderRadius: 10,
                                 textDecoration: 'none', fontSize: 14, fontWeight: isActive ? 600 : 500,
-                                color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                                background: isActive ? 'rgba(239,68,68,0.1)' : 'transparent',
+                                color: isActive ? '#1a1a2e' : '#64648b',
+                                background: isActive ? 'rgba(239,68,68,0.08)' : 'transparent',
                             }}>
-                                <Icon size={18} style={{ color: isActive ? 'var(--danger)' : 'var(--text-muted)' }} />
+                                <Icon size={18} style={{ color: isActive ? 'var(--danger)' : '#9ca3af' }} />
                                 {item.label}
                             </Link>
                         )
                     })}
                 </nav>
 
-                <div style={{ padding: 16, borderTop: '1px solid var(--border-color)' }}>
-                    <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 4 }}>Admin</div>
-                    <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, wordBreak: 'break-all' }}>{user?.email}</div>
+                <div style={{ padding: 16, borderTop: '1px solid #e5e7eb' }}>
+                    <div style={{ fontSize: 13, color: '#9ca3af', marginBottom: 4 }}>Admin</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, wordBreak: 'break-all', color: '#1a1a2e' }}>{user?.email}</div>
                     <button onClick={handleLogout} className="btn btn-secondary btn-sm" style={{ width: '100%' }}>
                         <LogOut size={16} /> Logout
                     </button>
                 </div>
             </aside>
 
-            <main style={{ flex: 1, marginLeft: 260, minHeight: '100vh' }} className="admin-main">
+            <main style={{ flex: 1, marginLeft: 260, minHeight: '100vh', background: '#f8f9fc' }} className="admin-main">
                 <div style={{
-                    padding: '16px 20px', borderBottom: '1px solid var(--border-color)',
+                    padding: '16px 20px', borderBottom: '1px solid #e5e7eb',
                     display: 'none', alignItems: 'center', justifyContent: 'space-between',
-                    background: 'var(--bg-secondary)',
+                    background: '#ffffff',
                 }} className="admin-mobile-header">
                     <button onClick={() => setSidebarOpen(true)} style={{
-                        background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer'
+                        background: 'none', border: 'none', color: '#1a1a2e', cursor: 'pointer'
                     }}><Menu size={24} /></button>
                     <span style={{ fontWeight: 800, fontSize: 18, color: 'var(--danger)' }}>Admin</span>
                     <div style={{ width: 24 }} />
                 </div>
 
-                <div style={{ padding: '32px 28px', maxWidth: 1200 }}>{children}</div>
+                <div style={{ padding: '32px 28px', maxWidth: 1200 }} className="admin-content">{children}</div>
             </main>
 
             <style jsx global>{`
@@ -143,6 +143,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           .admin-main { margin-left: 0 !important; }
           .admin-mobile-header { display: flex !important; }
           .admin-sidebar-close { display: block !important; }
+          .admin-content { padding: 20px 16px !important; }
         }
       `}</style>
         </div>
