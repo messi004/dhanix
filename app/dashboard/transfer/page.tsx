@@ -19,7 +19,7 @@ export default function TransferPage() {
             const res = await fetch('/api/wallet')
             if (res.ok) {
                 const data = await res.json()
-                setBalance(data.wallet.balance)
+                setBalance(parseFloat(data.balance || '0'))
             }
         } catch (error) {
             console.error('Failed to fetch balance', error)
