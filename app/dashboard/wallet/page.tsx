@@ -33,6 +33,7 @@ export default function WalletPage() {
                 <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
                     <Link href="/dashboard/deposit" className="btn btn-primary">Deposit</Link>
                     <Link href="/dashboard/withdraw" className="btn btn-secondary">Withdraw</Link>
+                    <Link href="/dashboard/transfer" className="btn btn-secondary">Transfer</Link>
                     <Link href="/dashboard/pools" className="btn btn-secondary">Create Pool</Link>
                 </div>
             </div>

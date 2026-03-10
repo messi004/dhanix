@@ -237,7 +237,7 @@ export default async function LandingPage() {
         background: '#ffffff',
       }}>
         <p style={{ margin: 0, marginBottom: 8 }}>© 2026 Dhanix. All rights reserved. USDT BEP20 Staking Platform.</p>
-        <p style={{ margin: 0 }}>Design & Developed by <a href="https://messidev.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Messi</a></p>
+        {/* <p style={{ margin: 0 }}>Design & Developed by <a href="https://messidev.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Messi</a></p> */}
       </footer>
     </div>
   )

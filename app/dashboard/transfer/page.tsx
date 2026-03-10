@@ -121,25 +121,25 @@ export default function TransferPage() {
                         </button>
                     </div>
 
-                    <form onSubmit={handleTransfer} className="auth-form">
-                        <div className="form-group">
-                            <label className="form-label">Recipient Email</label>
+                    <form onSubmit={handleTransfer}>
+                        <div className="input-group" style={{ marginBottom: 16 }}>
+                            <label>Recipient Email</label>
                             <input
                                 type="email"
-                                className="form-input"
+                                className="input"
                                 value={recipientEmail}
                                 onChange={(e) => setRecipientEmail(e.target.value)}
                                 placeholder="user@example.com"
                                 required
                             />
                         </div>
-                        <div className="form-group">
-                            <label className="form-label">Amount (USDT)</label>
+                        <div className="input-group" style={{ marginBottom: 24 }}>
+                            <label>Amount (USDT)</label>
                             <input
                                 type="number"
                                 step="0.01"
                                 min="0.01"
-                                className="form-input"
+                                className="input"
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 placeholder="0.00"
