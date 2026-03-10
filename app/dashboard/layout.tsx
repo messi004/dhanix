@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import {
     LayoutDashboard, Wallet, ArrowDownCircle, ArrowUpCircle,
-    Layers, History, Users, LifeBuoy, LogOut, Menu, X
+    Layers, History, Users, LifeBuoy, LogOut, Menu, X, Send
 } from 'lucide-react'
 
 interface User {
@@ -21,6 +21,7 @@ const navItems = [
     { href: '/dashboard/wallet', icon: Wallet, label: 'Wallet' },
     { href: '/dashboard/deposit', icon: ArrowDownCircle, label: 'Deposit' },
     { href: '/dashboard/withdraw', icon: ArrowUpCircle, label: 'Withdraw' },
+    { href: '/dashboard/transfer', icon: Send, label: 'Transfer' },
     { href: '/dashboard/pools', icon: Layers, label: 'Pools' },
     { href: '/dashboard/transactions', icon: History, label: 'Transactions' },
     { href: '/dashboard/referral', icon: Users, label: 'Referral' },

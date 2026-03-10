@@ -35,3 +35,8 @@ export const ticketMessageSchema = z.object({
 })
 
 export const settingsSchema = z.record(z.string(), z.string())
+
+export const transferSchema = z.object({
+    recipientEmail: z.string().email('Invalid email address'),
+    amount: z.number().positive('Amount must be positive'),
+})

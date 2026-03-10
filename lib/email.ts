@@ -163,3 +163,67 @@ export async function sendWelcomeEmail(email: string): Promise<boolean> {
         return false
     }
 }
+
+export async function sendTransferSentEmail(senderEmail: string, recipientEmail: string, amount: number): Promise<boolean> {
+    const title = 'Transfer Sent Successfully';
+    const content = `
+        <p>Hello,</p>
+        <p>You have successfully transferred USDT to another user.</p>
+        
+        <div class="box" style="background: #f8fafc; border-color: #cbd5e1;">
+            <p class="box-text" style="color: #475569;">Amount Sent</p>
+            <div class="box-value" style="color: #dc2626;">-${amount} USDT</div>
+        </div>
+        
+        <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="margin: 0; font-size: 14px;"><strong>Recipient:</strong> ${recipientEmail}</p>
+        </div>
+        
+        <p>Thank you for using Dhanix.</p>
+    `;
+
+    try {
+        await transporter.sendMail({
+            from: '"Dhanix" <' + (process.env.SMTP_USER || 'noreply@dhanix.com') + '>',
+            to: senderEmail,
+            subject: 'Dhanix - ' + title,
+            html: getBaseEmailTemplate(title, content),
+        })
+        return true
+    } catch (error) {
+        console.error('Transfer sent email error:', error)
+        return false
+    }
+}
+
+export async function sendTransferReceivedEmail(recipientEmail: string, senderEmail: string, amount: number): Promise<boolean> {
+    const title = 'You Received a Transfer';
+    const content = `
+        <p>Hello,</p>
+        <p>You have received a USDT transfer from another user.</p>
+        
+        <div class="box" style="background: #fdfaf0; border-color: #fde68a;">
+            <p class="box-text" style="color: #713f12;">Amount Received</p>
+            <div class="box-value" style="color: #16a34a;">+${amount} USDT</div>
+        </div>
+        
+        <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="margin: 0; font-size: 14px;"><strong>Sender:</strong> ${senderEmail}</p>
+        </div>
+        
+        <p>The funds are now available in your Dhanix wallet.</p>
+    `;
+
+    try {
+        await transporter.sendMail({
+            from: '"Dhanix" <' + (process.env.SMTP_USER || 'noreply@dhanix.com') + '>',
+            to: recipientEmail,
+            subject: 'Dhanix - ' + title,
+            html: getBaseEmailTemplate(title, content),
+        })
+        return true
+    } catch (error) {
+        console.error('Transfer received email error:', error)
+        return false
+    }
+}

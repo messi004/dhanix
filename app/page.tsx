@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
   Shield, TrendingUp, Users, Wallet, ChevronDown, ArrowRight,
-  Zap, Lock, Clock, Gift
+  Zap, Lock, Gift, Send
 } from 'lucide-react'
 import { getSetting } from '@/lib/settings'
 import { getCurrentUser } from '@/lib/auth'
@@ -14,7 +14,6 @@ export default async function LandingPage() {
   }
 
   const interestRate = await getSetting('interest_rate')
-  const minDuration = parseInt(await getSetting('min_pool_duration_months'))
   const minStake = await getSetting('min_stake')
   const minDeposit = await getSetting('min_deposit')
   const maxDeposit = await getSetting('max_deposit')
@@ -164,7 +163,7 @@ export default async function LandingPage() {
               { icon: <TrendingUp size={24} />, title: `${interestRate}% Annual Return`, desc: 'Industry-leading interest rates on your staked USDT. Transparent and predictable earnings.' },
               { icon: <Users size={24} />, title: 'Referral Rewards', desc: `Earn ${referralPercent}% bonus when your referrals make their first stake. Unlimited referral potential.` },
               { icon: <Gift size={24} />, title: 'Welcome Bonus', desc: `Get an instant ${welcomeBonusPercent}% bonus on your very first staking pool. Start earning from day one.` },
-              { icon: <Clock size={24} />, title: 'Flexible Duration', desc: `Minimum ${minDuration}-month staking period. Your principal and interest returned at maturity.` },
+              { icon: <Send size={24} />, title: 'Zero-Fee Transfers', desc: 'Instantly transfer USDT to other users on the platform with absolutely zero transaction fees.' },
               { icon: <Zap size={24} />, title: 'Instant Operations', desc: 'Auto-detect deposits. Quick withdrawals. Real-time balance updates.' },
             ].map((f, i) => (
               <div key={i} className="card" style={{ display: 'flex', gap: 16, padding: 24 }}>

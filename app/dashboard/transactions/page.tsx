@@ -7,7 +7,7 @@ interface Transaction {
     id: string; type: string; amount: string; description: string | null; createdAt: string
 }
 
-const types = ['ALL', 'DEPOSIT', 'WITHDRAW', 'STAKED', 'INTEREST', 'REFERRAL_REWARD', 'WELCOME_BONUS']
+const types = ['ALL', 'DEPOSIT', 'WITHDRAW', 'STAKED', 'INTEREST', 'REFERRAL_REWARD', 'WELCOME_BONUS', 'TRANSFER']
 
 export default function TransactionsPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -23,7 +23,7 @@ export default function TransactionsPage() {
     const statusBadge = (type: string) => {
         const map: Record<string, string> = {
             DEPOSIT: 'badge-success', WITHDRAW: 'badge-warning', STAKED: 'badge-info', INTEREST: 'badge-info',
-            REFERRAL_REWARD: 'badge-success', WELCOME_BONUS: 'badge-info',
+            REFERRAL_REWARD: 'badge-success', WELCOME_BONUS: 'badge-info', TRANSFER: 'badge-info'
         }
         return map[type] || 'badge-info'
     }

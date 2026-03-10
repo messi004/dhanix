@@ -42,6 +42,7 @@ enum TransactionType {
   INTEREST
   REFERRAL_REWARD
   WELCOME_BONUS
+  TRANSFER
 }
 
 enum SenderType {
