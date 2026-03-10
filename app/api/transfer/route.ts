@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { transferSchema } from '@/lib/validations'
 import { sendTransferSentEmail, sendTransferReceivedEmail } from '@/lib/email'
+import { TransactionType } from '@prisma/client'
 
 export async function POST(request: Request) {
     try {
@@ -73,7 +74,7 @@ export async function POST(request: Request) {
             await tx.transaction.create({
                 data: {
                     userId: user.id,
-                    type: 'TRANSFER',
+                    type: TransactionType.TRANSFER,
                     amount: -amount,
                     description: `Transferred ${amount} USDT to ${recipient.email}`
                 }
@@ -83,7 +84,7 @@ export async function POST(request: Request) {
             await tx.transaction.create({
                 data: {
                     userId: recipient.id,
-                    type: 'TRANSFER',
+                    type: TransactionType.TRANSFER,
                     amount: amount,
                     description: `Received ${amount} USDT from ${user.email}`
                 }
