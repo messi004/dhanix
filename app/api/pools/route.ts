@@ -165,49 +165,60 @@ export async function POST(request: Request) {
             )
         }
 
-        // Apply referral reward on first pool
-        if (isFirstPool && user.referredBy) {
-            const rewardAmount = amount * (referralPercentage / 100)
+        // Apply referral reward on first three pools
+        if (existingPools < 3 && user.referredBy) {
+            let currentReferrerId: string | null = user.referredBy;
+            let currentRewardAmount = amount * (referralPercentage / 100);
+            let currentLevel = 1;
 
-            // Fetch referrer to get their email
-            const referrerUser = await prisma.user.findUnique({
-                where: { id: user.referredBy },
-                select: { email: true }
-            })
+            while (currentReferrerId && currentLevel <= 3) {
+                // Fetch referrer account
+                const refAccount: { id: string, email: string, referredBy: string | null } | null = await prisma.user.findUnique({
+                    where: { id: currentReferrerId },
+                    select: { id: true, email: true, referredBy: true }
+                });
 
-            if (referrerUser) {
-                // Credit referrer
-                await prisma.wallet.update({
-                    where: { userId: user.referredBy },
-                    data: { balance: { increment: rewardAmount } },
-                })
+                if (refAccount) {
+                    // Credit referrer
+                    await prisma.wallet.update({
+                        where: { userId: refAccount.id },
+                        data: { balance: { increment: currentRewardAmount } },
+                    });
 
-                // Record referral
-                await prisma.referral.create({
-                    data: {
-                        referrerId: user.referredBy,
-                        referredUserId: user.id,
-                        rewardAmount,
-                    },
-                })
+                    // Record referral
+                    await prisma.referral.create({
+                        data: {
+                            referrerId: refAccount.id,
+                            referredUserId: user.id,
+                            rewardAmount: currentRewardAmount,
+                        },
+                    });
 
-                // Record transaction for referrer
-                await prisma.transaction.create({
-                    data: {
-                        userId: user.referredBy,
-                        type: 'REFERRAL_REWARD',
-                        amount: rewardAmount,
-                        referenceId: pool.id,
-                        description: `Referral reward from ${user.email}'s first stake`,
-                    },
-                })
+                    // Record transaction for referrer
+                    await prisma.transaction.create({
+                        data: {
+                            userId: refAccount.id,
+                            type: 'REFERRAL_REWARD',
+                            amount: currentRewardAmount,
+                            referenceId: pool.id,
+                            description: `Level ${currentLevel} referral reward from ${user.email}'s pool #${existingPools + 1}`,
+                        },
+                    });
 
-                await sendTransactionNotification(
-                    referrerUser.email,
-                    'REFERRAL',
-                    rewardAmount.toString(),
-                    `Great news! You received a referral reward from your friend's first stake.`
-                )
+                    await sendTransactionNotification(
+                        refAccount.email,
+                        'REFERRAL',
+                        currentRewardAmount.toString(),
+                        `Great news! You received a Level ${currentLevel} referral reward from your friend's pool creation.`
+                    );
+
+                    // Prepare for next level
+                    currentReferrerId = refAccount.referredBy;
+                    currentRewardAmount = currentRewardAmount / 2;
+                    currentLevel++;
+                } else {
+                    break;
+                }
             }
         }
 

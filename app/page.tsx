@@ -161,7 +161,7 @@ export default async function LandingPage() {
             {[
               { icon: <Shield size={24} />, title: 'Bank-Grade Security', desc: 'Your funds are protected with enterprise-grade encryption and secure smart contracts on BSC.' },
               { icon: <TrendingUp size={24} />, title: `${interestRate}% Annual Return`, desc: 'Industry-leading interest rates on your staked USDT. Transparent and predictable earnings.' },
-              { icon: <Users size={24} />, title: 'Referral Rewards', desc: `Earn ${referralPercent}% bonus when your referrals make their first stake. Unlimited referral potential.` },
+              { icon: <Users size={24} />, title: '3-Level Referral Rewards', desc: `Earn rewards up to 3 levels deep when your referrals make their first 3 stakes. Unlimited growth potential.` },
               { icon: <Gift size={24} />, title: 'Welcome Bonus', desc: `Get an instant ${welcomeBonusPercent}% bonus on your very first staking pool. Start earning from day one.` },
               { icon: <Send size={24} />, title: 'Zero-Fee Transfers', desc: 'Instantly transfer USDT to other users on the platform with absolutely zero transaction fees.' },
               { icon: <Zap size={24} />, title: 'Instant Operations', desc: 'Auto-detect deposits. Quick withdrawals. Real-time balance updates.' },
@@ -195,7 +195,7 @@ export default async function LandingPage() {
             { q: 'What is the minimum deposit?', a: `The minimum deposit is ${minDeposit} USDT BEP20. You can deposit up to ${maxDeposit} USDT per transaction.` },
             { q: 'How does staking work?', a: `When you create a staking pool, your USDT is locked for the chosen duration. You earn ${interestRate}% annual interest calculated daily. At maturity, your principal plus interest is returned to your wallet.` },
             { q: 'How do withdrawals work?', a: `You can withdraw from your wallet balance anytime. Minimum withdrawal is ${minWithdraw} USDT, maximum ${maxWithdraw} USDT. ${withdrawPerDay} withdrawal(s) per day is allowed.` },
-            { q: 'How does the referral system work?', a: `Share your unique referral link. When your referred user creates their first staking pool, you automatically receive a ${referralPercent}% reward based on their stake amount.` },
+            { q: 'How does the referral system work?', a: `Share your unique referral link. You earn rewards up to 3 levels deep for the first three staking pools created by each referral. Level 1 gets the full referral bonus, Level 2 gets 50% of that, and Level 3 gets 25%.` },
             { q: 'Is my money safe?', a: 'Yes. We use enterprise-grade security, encrypted wallets, and operate on the Binance Smart Chain for transparent transactions.' },
           ].map((faq, i) => (
             <details key={i} className="card" style={{ cursor: 'pointer' }}>

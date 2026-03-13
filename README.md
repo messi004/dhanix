@@ -7,6 +7,7 @@ Dhanix is a fully automated, decentralized-inspired staking platform built prima
 2. **Dynamic Staking Pools:** Users can configure staking pools for durations equal to or greater than the minimum permitted by the platform's Admin. Interest rates and limits are completely dynamic.
 3. **Automated Interest Payouts:** Another cron job calculates earned APY for mature pools down to the day and automatically credits the user's secure wallet.
 4. **Automated Withdrawals:** Users can withdraw their USDT directly to any BSC wallet, handled securely via an automated dispatcher running via cron.
+5. **3-Level Referral Rewards:** A sophisticated referral system that rewards users up to 3 levels deep for the first three pools created by their referrals. Commissions are distributed as: Level 1 (Full), Level 2 (50% of L1), and Level 3 (50% of L2).
 
 ---
 

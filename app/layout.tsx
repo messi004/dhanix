@@ -10,12 +10,12 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'Dhanix – Crypto Staking Platform | Earn Up To 12% APY on USDT',
-  description: 'Dhanix is a secure USDT BEP20 staking platform where you can earn up to 12% annual interest. Stake your USDT, refer friends, and earn rewards.',
+  title: 'Dhanix – Crypto Staking Platform | Earn Up To 24% APY on USDT',
+  description: 'Dhanix is a secure USDT BEP20 staking platform where you can earn up to 24% annual interest. Stake your USDT, refer friends, and earn rewards.',
   keywords: 'crypto staking, USDT staking, BEP20, passive income, cryptocurrency, Dhanix',
   openGraph: {
     title: 'Dhanix – Crypto Staking Platform',
-    description: 'Earn up to 12% APY on your USDT with Dhanix. Secure, transparent, and rewarding.',
+    description: 'Earn up to 24% APY on your USDT with Dhanix. Secure, transparent, and rewarding.',
     type: 'website',
     url: process.env.NEXT_PUBLIC_APP_URL || 'https://dhanix.com',
     siteName: 'Dhanix',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Dhanix – Crypto Staking Platform',
-    description: 'Earn up to 12% APY on your USDT with Dhanix.',
+    description: 'Earn up to 24% APY on your USDT with Dhanix.',
   },
   robots: { index: true, follow: true },
 }
@@ -38,7 +38,7 @@ export default function RootLayout({
     '@type': 'FinancialService',
     name: 'Dhanix Crypto Staking',
     url: process.env.NEXT_PUBLIC_APP_URL || 'https://dhanix.com',
-    description: 'Earn up to 12% APY on your USDT with Dhanix secure crypto staking platform.',
+    description: 'Earn up to 24% APY on your USDT with Dhanix secure crypto staking platform.',
     offers: {
       '@type': 'Offer',
       price: '0',
