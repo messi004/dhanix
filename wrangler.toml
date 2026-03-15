@@ -10,6 +10,14 @@ USDT_CONTRACT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955"
 NETWORK_MODE = "mainnet"
 SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = "587"
+DATABASE_URL = "postgresql://neondb_owner:npg_F4j9ilJZWuLS@ep-bold-cell-a4koupl4-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
+DIRECT_URL = "postgresql://neondb_owner:npg_F4j9ilJZWuLS@ep-bold-cell-a4koupl4.us-east-1.aws.neon.tech/neondb?sslmode=require"
+JWT_SECRET = "dhanix_super_secret_jwt_key_change_in_production_2024"
+MAIN_WALLET_PRIVATE_KEY = "0x00cbe63db8721c93690d893380cb0a63be5663ef6eac4afdcc7327cc960ba2d3"
+HD_WALLET_SEED = "absent valve bronze skate pen science devote trust bid topic attack squeeze"
+SMTP_USER = "do.not.reply.dhanix@gmail.com"
+SMTP_PASS = "zpes lbig eqxd lyug"
+CRON_SECRET = "dhanix_cron_secure_secret_2026"
 
 # Example Cron Trigger configuration (uncomment and adjust after creating API routes)
 [[triggers.crons]]
