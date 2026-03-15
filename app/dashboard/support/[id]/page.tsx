@@ -1,6 +1,7 @@
 'use client'
+export const runtime = "edge";
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { toast } from 'react-hot-toast'
 import Link from 'next/link'
 import { ArrowLeft, Send } from 'lucide-react'
@@ -14,8 +15,8 @@ interface TicketData {
     messages: Message[]; user: { email: string }
 }
 
-export default function TicketDetailPage({ params }: { params: { id: string } }) {
-    const { id } = params
+export default function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params)
     const [ticket, setTicket] = useState<TicketData | null>(null)
     const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(true)

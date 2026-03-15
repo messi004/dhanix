@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from 'next/server'
@@ -68,7 +70,7 @@ export async function POST(request: Request) {
             // Cleanup OTPs after successful login
             await prisma.otp.deleteMany({ where: { email } })
 
-            const token = signToken({
+            const token = await signToken({
                 userId: user.id,
                 email: user.email,
                 role: user.role,

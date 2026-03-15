@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from 'next/server'
@@ -14,13 +16,13 @@ async function requireAdmin() {
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const admin = await requireAdmin()
         if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
-        const { id } = params
+        const { id } = await params
         const ticket = await prisma.ticket.findUnique({
             where: { id },
             include: {
@@ -40,13 +42,13 @@ export async function GET(
 
 export async function POST(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const admin = await requireAdmin()
         if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
-        const { id } = params
+        const { id } = await params
         const body = await request.json()
 
         if (!body.message || body.message.length < 2) {
