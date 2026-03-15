@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build && npx @cloudflare/next-on-pages",
-    "pages:build": "npm run build",
+    "build": "prisma generate && next build",
+    "cf-build": "npm run build && npx @cloudflare/next-on-pages",
     "start": "next start",
     "start:cron": "npx tsx scripts/cron.ts",
     "lint": "next lint",
