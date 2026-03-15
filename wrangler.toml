@@ -3,8 +3,13 @@ compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".next"
 
-[env.production.vars]
+[vars]
 NEXT_PUBLIC_APP_URL = "https://dhanix.pages.dev"
+BSC_RPC_URL = "https://bsc-dataseed.binance.org/"
+USDT_CONTRACT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955"
+NETWORK_MODE = "mainnet"
+SMTP_HOST = "smtp.gmail.com"
+SMTP_PORT = "587"
 
 # Example Cron Trigger configuration (uncomment and adjust after creating API routes)
 [[triggers.crons]]
