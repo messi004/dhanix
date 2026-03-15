@@ -1,0 +1,17 @@
+name = "dhanix"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".next"
+
+[env.production.vars]
+NEXT_PUBLIC_APP_URL = "https://dhanix.pages.dev"
+
+# Example Cron Trigger configuration (uncomment and adjust after creating API routes)
+[[triggers.crons]]
+cron = "*/2 * * * *" # Every 2 minutes (Deposits)
+
+[[triggers.crons]]
+cron = "*/3 * * * *" # Every 3 minutes (Withdrawals)
+
+[[triggers.crons]]
+cron = "0 * * * *"   # Every hour (Pool Maturity)
