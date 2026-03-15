@@ -1,7 +1,7 @@
+export const runtime = "edge";
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { getUSDTContract, getProvider } from '@/lib/blockchain'
-import { ethers } from 'ethers'
+import { sendUSDT } from '@/lib/blockchain'
 import { sendTransactionNotification } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
@@ -29,22 +29,16 @@ export async function GET(request: Request) {
         const privateKey = process.env.MAIN_WALLET_PRIVATE_KEY
         if (!privateKey) throw new Error('MAIN_WALLET_PRIVATE_KEY missing')
 
-        const provider = getProvider()
-        const wallet = new ethers.Wallet(privateKey, provider)
-        const usdtContract = getUSDTContract(wallet)
-        const decimals = await usdtContract.decimals()
         let processedCount = 0
 
         for (const withdrawal of pendingWithdrawals) {
             try {
-                const amountWei = ethers.utils.parseUnits(withdrawal.amount.toString(), decimals)
-                const tx = await usdtContract.transfer(withdrawal.walletAddress, amountWei)
-                const receipt = await tx.wait()
+                const result = await sendUSDT(withdrawal.walletAddress, withdrawal.amount.toString())
                 
-                if (receipt.status === 1) {
+                if ('txHash' in result) {
                     await prisma.withdraw.update({
                         where: { id: withdrawal.id },
-                        data: { status: 'SENT', txHash: tx.hash }
+                        data: { status: 'SENT', txHash: result.txHash }
                     })
                     await sendTransactionNotification(
                         withdrawal.user.email,
@@ -54,7 +48,7 @@ export async function GET(request: Request) {
                     )
                     processedCount++
                 } else {
-                     throw new Error('Transaction reverted')
+                     throw new Error(result.error)
                 }
             } catch (err: unknown) {
                 console.error(`❌ [WITHDRAWALS] Error processing ${withdrawal.id}:`, err instanceof Error ? err.message : err)

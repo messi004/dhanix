@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken'
+import * as jose from 'jose'
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
 import prisma from './prisma'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret'
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret')
 
 export interface JWTPayload {
     userId: string
@@ -19,13 +19,18 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     return bcrypt.compare(password, hash)
 }
 
-export function signToken(payload: JWTPayload): string {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' })
+export async function signToken(payload: JWTPayload): Promise<string> {
+    return new jose.SignJWT(payload as unknown as jose.JWTPayload)
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('7d')
+        .sign(JWT_SECRET)
 }
 
-export function verifyToken(token: string): JWTPayload | null {
+export async function verifyToken(token: string): Promise<JWTPayload | null> {
     try {
-        return jwt.verify(token, JWT_SECRET) as JWTPayload
+        const { payload } = await jose.jwtVerify(token, JWT_SECRET)
+        return payload as unknown as JWTPayload
     } catch {
         return null
     }
@@ -37,7 +42,7 @@ export async function getCurrentUser() {
 
     if (!token) return null
 
-    const payload = verifyToken(token)
+    const payload = await verifyToken(token)
     if (!payload) return null
 
     const user = await prisma.user.findUnique({

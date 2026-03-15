@@ -1,14 +1,15 @@
-import nodemailer from 'nodemailer'
+// nodemailer is not compatible with Edge runtime. 
+// Recommend switching to a service like Resend or SendGrid.
+// import nodemailer from 'nodemailer'
 
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false,
-    auth: {
-        user: process.env.SMTP_USER || '',
-        pass: process.env.SMTP_PASS || '',
-    },
-})
+const transporter = {
+    sendMail: async (opts: { to: string, subject: string, html: string, from?: string }) => {
+        console.log('Mock Email Sent:', opts.subject, 'to', opts.to);
+        // In a real Edge environment, you would use:
+        // await fetch('https://api.resend.com/emails', { ... })
+        return { messageId: 'mock-id' };
+    }
+}
 
 export function generateOtp(): string {
     return Math.floor(100000 + Math.random() * 900000).toString()

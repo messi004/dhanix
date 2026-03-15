@@ -1,8 +1,14 @@
+export const runtime = "edge";
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { getUSDTContract } from '@/lib/blockchain'
-import { ethers } from 'ethers'
+import { publicClient } from '@/lib/blockchain'
+import { formatUnits, parseAbi } from 'viem'
 import { sendTransactionNotification } from '@/lib/email'
+
+const USDT_ABI = parseAbi([
+    'function balanceOf(address account) view returns (uint256)',
+    'function decimals() view returns (uint8)',
+])
 
 export const dynamic = 'force-dynamic'
 
@@ -26,14 +32,23 @@ export async function GET(request: Request) {
              return NextResponse.json({ message: 'No pending deposits found' })
         }
 
-        const usdtContract = getUSDTContract()
-        const decimals = await usdtContract.decimals()
+        const usdtAddress = process.env.USDT_CONTRACT_ADDRESS as `0x${string}`
+        const decimals = await publicClient.readContract({
+            address: usdtAddress,
+            abi: USDT_ABI,
+            functionName: 'decimals',
+        })
         let confirmedCount = 0
 
         for (const deposit of pendingDeposits) {
             try {
-                const rawBalance = await usdtContract.balanceOf(deposit.address)
-                const balance = parseFloat(ethers.utils.formatUnits(rawBalance, decimals))
+                const rawBalance = await publicClient.readContract({
+                    address: usdtAddress,
+                    abi: USDT_ABI,
+                    functionName: 'balanceOf',
+                    args: [deposit.address as `0x${string}`],
+                })
+                const balance = parseFloat(formatUnits(rawBalance as bigint, decimals))
                 const expectedAmount = parseFloat(deposit.amount.toString())
 
                 if (balance >= expectedAmount) {
