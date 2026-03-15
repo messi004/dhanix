@@ -27,11 +27,6 @@ export const metadata: Metadata = {
     description: 'Earn up to 24% APY on your USDT with Dhanix.',
   },
   robots: { index: true, follow: true },
-  icons: {
-    icon: '/logo.png',
-    shortcut: '/logo.png',
-    apple: '/logo.png',
-  },
 }
 
 export default function RootLayout({
