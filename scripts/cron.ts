@@ -1,9 +1,10 @@
+import 'dotenv/config';
 import cron from 'node-cron';
-import { PrismaClient } from '@prisma/client';
-import { ethers } from 'ethers';
+import prisma from '../lib/prisma';
+import { ethers, JsonRpcProvider, formatUnits, parseUnits } from 'ethers';
 import { sendTransactionNotification } from '../lib/email';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient(); // Removed as we use the centralized one
 
 const USDT_ABI = [
     'function transfer(address to, uint256 amount) returns (bool)',
@@ -12,7 +13,7 @@ const USDT_ABI = [
 ];
 
 const rpcUrl = process.env.BSC_RPC_URL || 'https://bsc-dataseed.binance.org/';
-const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+const provider = new JsonRpcProvider(rpcUrl);
 
 const USDT_CONTRACT_ADDRESS = process.env.USDT_CONTRACT_ADDRESS || '0x55d398326f99059fF775485246999027B3197955';
 const privateKey = process.env.MAIN_WALLET_PRIVATE_KEY;
@@ -55,7 +56,7 @@ cron.schedule('*/2 * * * *', async () => {
         for (const deposit of pendingDeposits) {
             try {
                 const rawBalance = await usdtContract.balanceOf(deposit.address);
-                const balance = parseFloat(ethers.utils.formatUnits(rawBalance, decimals));
+                const balance = parseFloat(formatUnits(rawBalance, decimals));
                 const expectedAmount = parseFloat(deposit.amount.toString());
 
                 if (balance >= expectedAmount) {
@@ -125,7 +126,7 @@ cron.schedule('*/3 * * * *', async () => {
         for (const withdrawal of pendingWithdrawals) {
             try {
                 console.log(`💸 [WITHDRAWALS] Attempting to dispatch ${withdrawal.amount} USDT to ${withdrawal.walletAddress}...`);
-                const amountWei = ethers.utils.parseUnits(withdrawal.amount.toString(), decimals);
+                const amountWei = parseUnits(withdrawal.amount.toString(), decimals);
                 
                 const tx = await usdtContract.transfer(withdrawal.walletAddress, amountWei);
                 console.log(`... [WITHDRAWALS] Transaction broadcasted with hash: ${tx.hash}`);

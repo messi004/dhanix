@@ -7,16 +7,18 @@ Dhanix is a fully automated, decentralized-inspired staking platform built prima
 2. **Dynamic Staking Pools:** Users can configure staking pools for durations equal to or greater than the minimum permitted by the platform's Admin. Interest rates and limits are completely dynamic.
 3. **Automated Interest Payouts:** Another cron job calculates earned APY for mature pools down to the day and automatically credits the user's secure wallet.
 4. **Automated Withdrawals:** Users can withdraw their USDT directly to any BSC wallet, handled securely via an automated dispatcher running via cron.
-5. **3-Level Referral Rewards:** A sophisticated referral system that rewards users up to 3 levels deep for the first three pools created by their referrals. Commissions are distributed as: Level 1 (Full), Level 2 (50% of L1), and Level 3 (50% of L2).
+5. **3-Level Referral Rewards:** A sophisticated referral system that rewards users up to 3 levels deep for the first three pools created by their referrals.
+6. **Admin System Health:** Real-time dashboard for monitoring database status, PM2 process health, and live execution logs.
 
 ---
 
 ## Tech Stack
-* **Frontend:** Next.js 15 (React 19), App Router, Vanilla CSS
-* **Backend:** Next.js API Routes, NextAuth.js (Credentials Provider)
-* **Database:** PostgreSQL (via Prisma ORM)
-* **Blockchain Integration:** `ethers.js` connected to BSC Mainnet RPC endpoints
-* **Automation:** `node-cron` with `PM2` for resilient background processing (`dhanix-cron`)
+* **Frontend:** Next.js 16 (React 19), App Router, Vanilla CSS
+* **Backend:** Next.js API Routes, NextAuth.js
+* **Database:** PostgreSQL (via Prisma v7 ORM)
+* **Blockchain:** `ethers v6` connected to BSC Mainnet
+* **Automation:** `node-cron` with `PM2` (`dhanix-cron`)
+* **Environment Support:** Hardware-compatible Webpack engine for older CPUs.
 
 ---
 

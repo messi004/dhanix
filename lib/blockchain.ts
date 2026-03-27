@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { ethers, JsonRpcProvider, HDNodeWallet, parseUnits, formatUnits } from 'ethers'
 
 const USDT_ABI = [
     'function transfer(address to, uint256 amount) returns (bool)',
@@ -6,12 +6,12 @@ const USDT_ABI = [
     'function decimals() view returns (uint8)',
 ]
 
-export function getProvider(): ethers.providers.JsonRpcProvider {
+export function getProvider(): JsonRpcProvider {
     const rpcUrl = process.env.BSC_RPC_URL || 'https://bsc-dataseed.binance.org/'
-    return new ethers.providers.JsonRpcProvider(rpcUrl)
+    return new JsonRpcProvider(rpcUrl)
 }
 
-export function getUSDTContract(signerOrProvider?: ethers.Signer | ethers.providers.Provider) {
+export function getUSDTContract(signerOrProvider?: ethers.Signer | ethers.Provider) {
     const contractAddress = process.env.USDT_CONTRACT_ADDRESS || ''
     const provider = signerOrProvider || getProvider()
     return new ethers.Contract(contractAddress, USDT_ABI, provider)
@@ -25,7 +25,7 @@ export function generateDepositAddress(index: number): { address: string; privat
         return { address: wallet.address, privateKey: wallet.privateKey }
     }
 
-    const hdNode = ethers.utils.HDNode.fromMnemonic(seed)
+    const hdNode = HDNodeWallet.fromPhrase(seed)
     // BIP44 path: m/44'/60'/0'/0/index
     const path = `m/44'/60'/0'/0/${index}`
     const child = hdNode.derivePath(path)
@@ -47,12 +47,12 @@ export async function sendUSDT(
         const contract = getUSDTContract(wallet)
 
         const decimals = await contract.decimals()
-        const amountWei = ethers.utils.parseUnits(amount, decimals)
+        const amountWei = parseUnits(amount, decimals)
 
         const tx = await contract.transfer(toAddress, amountWei)
         const receipt = await tx.wait()
 
-        return { txHash: receipt.transactionHash }
+        return { txHash: receipt.hash }
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Unknown error'
         return { error: message }
@@ -64,7 +64,7 @@ export async function getUSDTBalance(address: string): Promise<string> {
         const contract = getUSDTContract()
         const balance = await contract.balanceOf(address)
         const decimals = await contract.decimals()
-        return ethers.utils.formatUnits(balance, decimals)
+        return formatUnits(balance, decimals)
     } catch {
         return '0'
     }
