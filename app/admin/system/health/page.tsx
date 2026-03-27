@@ -91,18 +91,17 @@ export default function SystemHealthPage() {
 
     return (
         <div style={{ color: '#1a1a2e' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+            <div className="header-row">
                 <div>
-                    <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <h1 className="title">
                         <Activity className="text-danger" size={32} /> System Health
                     </h1>
-                    <p style={{ color: '#64648b' }}>Monitor application infrastructure, cron jobs, and real-time logs.</p>
+                    <p className="subtitle">Monitor application infrastructure, cron jobs, and real-time logs.</p>
                 </div>
                 <button 
                     onClick={() => fetchHealth(true)} 
                     disabled={refreshing}
-                    className="btn btn-secondary"
-                    style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+                    className="btn btn-secondary refresh-btn"
                 >
                     <RefreshCcw size={18} className={refreshing ? 'spin' : ''} />
                     {refreshing ? 'Refreshing...' : 'Refresh Now'}
@@ -110,9 +109,9 @@ export default function SystemHealthPage() {
             </div>
 
             {/* Top Status Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginBottom: 32 }}>
+            <div className="status-grid">
                 <StatusCard 
-                    title="Database Connection" 
+                    title="Database" 
                     value={data?.database || 'Unknown'} 
                     status={data?.database === 'ONLINE' ? 'success' : 'error'}
                     icon={<Database size={24} />}
@@ -124,13 +123,13 @@ export default function SystemHealthPage() {
                     icon={<Clock size={24} />}
                 />
                 <StatusCard 
-                    title="System Platform" 
+                    title="Platform" 
                     value={data?.system.platform ? `${data.system.platform} (${data.system.arch})` : 'Unknown'} 
                     status="neutral"
                     icon={<Server size={24} />}
                 />
                 <StatusCard 
-                    title="Node Version" 
+                    title="Node" 
                     value={data?.system.nodeVersion || 'Unknown'} 
                     status="neutral"
                     icon={<Box size={24} />}
@@ -138,10 +137,10 @@ export default function SystemHealthPage() {
             </div>
 
             {/* PM2 Processes & Health Metrics */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, marginBottom: 32 }}>
-                <div className="card" style={{ padding: 0 }}>
-                    <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f1f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Active PM2 Processes</h3>
+            <div className="main-grid">
+                <div className="card processes-card" style={{ padding: 0 }}>
+                    <div className="card-header">
+                        <h3 className="card-title">Active PM2 Processes</h3>
                         <div className="badge badge-success">Online</div>
                     </div>
                     <div className="table-responsive">
@@ -153,8 +152,8 @@ export default function SystemHealthPage() {
                                     <th>Status</th>
                                     <th>CPU</th>
                                     <th>Memory</th>
-                                    <th>Uptime</th>
-                                    <th>Restarts</th>
+                                    <th className="hide-mobile">Uptime</th>
+                                    <th className="hide-mobile">Restarts</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -170,8 +169,8 @@ export default function SystemHealthPage() {
                                         <td><span className={`badge badge-${job.status === 'online' ? 'success' : 'danger'}`}>{job.status}</span></td>
                                         <td>{job.cpu}%</td>
                                         <td>{formatBytes(job.memory)}</td>
-                                        <td>{formatUptime(job.uptime)}</td>
-                                        <td>{job.restarts}</td>
+                                        <td className="hide-mobile">{formatUptime(job.uptime)}</td>
+                                        <td className="hide-mobile">{job.restarts}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -179,8 +178,8 @@ export default function SystemHealthPage() {
                     </div>
                 </div>
 
-                <div className="card">
-                    <h3 style={{ marginBottom: 20, fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div className="card resources-card">
+                    <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <Cpu className="text-danger" size={20} /> Resources
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -209,46 +208,32 @@ export default function SystemHealthPage() {
             </div>
 
             {/* Logs Viewer */}
-            <div className="card" style={{ background: '#111827', color: '#f3f4f6', borderColor: '#374151' }}>
-                <div style={{ paddingBottom: 20, borderBottom: '1px solid #374151', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div className="card logs-card">
+                <div className="card-header logs-header">
+                    <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <Terminal size={20} /> Live Console Logs
                     </h3>
-                    <div style={{ display: 'flex', gap: 8, background: '#1f2937', padding: 4, borderRadius: 8 }}>
+                    <div className="log-toggle">
                         <button 
                             onClick={() => { setLogType('out'); fetchLogs('out') }}
-                            style={{ 
-                                padding: '6px 16px', borderRadius: 6, border: 'none', cursor: 'pointer',
-                                background: logType === 'out' ? '#374151' : 'transparent',
-                                color: logType === 'out' ? 'white' : '#9ca3af',
-                                fontSize: 12, fontWeight: 600
-                            }}
+                            className={`log-btn ${logType === 'out' ? 'active' : ''}`}
                         >Output</button>
                         <button 
                             onClick={() => { setLogType('error'); fetchLogs('error') }}
-                            style={{ 
-                                padding: '6px 16px', borderRadius: 6, border: 'none', cursor: 'pointer',
-                                background: logType === 'error' ? '#ef4444' : 'transparent',
-                                color: logType === 'error' ? 'white' : '#9ca3af',
-                                fontSize: 12, fontWeight: 600
-                            }}
+                            className={`log-btn ${logType === 'error' ? 'active-error' : ''}`}
                         >Errors</button>
                     </div>
                 </div>
-                <div style={{ 
-                    maxHeight: 400, overflowY: 'auto', padding: '20px 0', 
-                    fontFamily: 'monospace', fontSize: 12, lineHeight: 1.6 
-                }}>
+                <div className="log-content">
                     {loadingLogs ? (
                         <div style={{ padding: 20, textAlign: 'center', color: '#6b7280' }}>Loading logs...</div>
                     ) : logs.length > 0 ? (
                         logs.map((log, i) => (
-                            <div key={i} style={{ 
-                                padding: '2px 20px', 
+                            <div key={i} className="log-line" style={{ 
                                 color: log.includes('❌') || log.includes('error') ? '#f87171' : 
                                        log.includes('✅') || log.includes('🚀') ? '#34d399' : '#d1d5db'
                             }}>
-                                <span style={{ color: '#4b5563', marginRight: 15 }}>[{i+1}]</span>
+                                <span className="log-number">[{i+1}]</span>
                                 {log}
                             </div>
                         ))
@@ -259,6 +244,40 @@ export default function SystemHealthPage() {
             </div>
 
             <style jsx>{`
+                .header-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 32px;
+                }
+                .title {
+                    font-size: 28px;
+                    font-weight: 800;
+                    margin-bottom: 8px;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                }
+                .subtitle {
+                    color: #64648b;
+                }
+                .refresh-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .status-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 20px;
+                    margin-bottom: 32px;
+                }
+                .main-grid {
+                    display: grid;
+                    grid-template-columns: 2fr 1fr;
+                    gap: 24px;
+                    margin-bottom: 32px;
+                }
                 .card {
                     background: #ffffff;
                     border: 1px solid #e5e7eb;
@@ -266,7 +285,63 @@ export default function SystemHealthPage() {
                     padding: 24px;
                     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.01);
                 }
-                .text-danger { color: var(--danger); }
+                .card-header {
+                    padding: 20px 24px;
+                    border-bottom: 1px solid #f1f1f4;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .card-title {
+                    margin: 0;
+                    font-size: 18px;
+                    font-weight: 700;
+                }
+                .logs-card {
+                    background: #111827;
+                    color: #f3f4f6;
+                    border-color: #374151;
+                    padding: 0;
+                }
+                .logs-header {
+                    border-bottom: 1px solid #374151;
+                }
+                .log-toggle {
+                    display: flex;
+                    gap: 8px;
+                    background: #1f2937;
+                    padding: 4px;
+                    border-radius: 8px;
+                }
+                .log-btn {
+                    padding: 6px 16px;
+                    border-radius: 6px;
+                    border: none;
+                    cursor: pointer;
+                    background: transparent;
+                    color: #9ca3af;
+                    font-size: 12px;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                }
+                .log-btn.active { background: #374151; color: white; }
+                .log-btn.active-error { background: #ef4444; color: white; }
+                .log-content {
+                    max-height: 400px;
+                    overflow-y: auto;
+                    padding: 20px 0;
+                    font-family: 'monospace';
+                    font-size: 12px;
+                    line-height: 1.6;
+                }
+                .log-line {
+                    padding: 2px 20px;
+                }
+                .log-number {
+                    color: #4b5563;
+                    margin-right: 15px;
+                }
+                .text-danger { color: #ef4444; }
                 .badge {
                     padding: 4px 10px;
                     border-radius: 6px;
@@ -279,6 +354,41 @@ export default function SystemHealthPage() {
                 .badge-warning { background: #fef3c7; color: #92400e; }
                 .spin { animation: spin 1s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+                @media (max-width: 1024px) {
+                    .main-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .header-row {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 16px;
+                    }
+                    .status-grid {
+                        grid-template-columns: 1fr;
+                    }
+                    .hide-mobile {
+                        display: none;
+                    }
+                    .card-header {
+                        padding: 15px 20px;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 12px;
+                    }
+                    .log-toggle {
+                        width: 100%;
+                    }
+                    .log-btn {
+                        flex: 1;
+                    }
+                    .title {
+                        font-size: 24px;
+                    }
+                }
             `}</style>
         </div>
     )
