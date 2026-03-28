@@ -249,6 +249,7 @@ export default function SystemHealthPage() {
                     justify-content: space-between;
                     align-items: center;
                     margin-bottom: 32px;
+                    gap: 20px;
                 }
                 .title {
                     font-size: 28px;
@@ -265,10 +266,11 @@ export default function SystemHealthPage() {
                     display: flex;
                     align-items: center;
                     gap: 8px;
+                    white-space: nowrap;
                 }
                 .status-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
                     gap: 20px;
                     margin-bottom: 32px;
                 }
@@ -291,11 +293,20 @@ export default function SystemHealthPage() {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
+                    gap: 16px;
                 }
                 .card-title {
                     margin: 0;
                     font-size: 18px;
                     font-weight: 700;
+                }
+                .table-responsive {
+                    width: 100%;
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+                .table {
+                    min-width: 500px;
                 }
                 .logs-card {
                     background: #111827;
@@ -308,38 +319,41 @@ export default function SystemHealthPage() {
                 }
                 .log-toggle {
                     display: flex;
-                    gap: 8px;
+                    gap: 4px;
                     background: #1f2937;
                     padding: 4px;
                     border-radius: 8px;
                 }
                 .log-btn {
-                    padding: 6px 16px;
+                    padding: 6px 12px;
                     border-radius: 6px;
                     border: none;
                     cursor: pointer;
                     background: transparent;
                     color: #9ca3af;
-                    font-size: 12px;
+                    font-size: 11px;
                     font-weight: 600;
                     transition: all 0.2s;
+                    white-space: nowrap;
                 }
                 .log-btn.active { background: #374151; color: white; }
                 .log-btn.active-error { background: #ef4444; color: white; }
                 .log-content {
-                    max-height: 400px;
+                    max-height: 440px;
                     overflow-y: auto;
                     padding: 20px 0;
-                    font-family: 'monospace';
+                    font-family: 'JetBrains Mono', 'Fira Code', monospace;
                     font-size: 12px;
                     line-height: 1.6;
                 }
                 .log-line {
                     padding: 2px 20px;
+                    word-break: break-all;
                 }
                 .log-number {
                     color: #4b5563;
                     margin-right: 15px;
+                    user-select: none;
                 }
                 .text-danger { color: #ef4444; }
                 .badge {
@@ -355,7 +369,7 @@ export default function SystemHealthPage() {
                 .spin { animation: spin 1s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-                @media (max-width: 1024px) {
+                @media (max-width: 1200px) {
                     .main-grid {
                         grid-template-columns: 1fr;
                     }
@@ -364,29 +378,66 @@ export default function SystemHealthPage() {
                 @media (max-width: 768px) {
                     .header-row {
                         flex-direction: column;
-                        align-items: flex-start;
-                        gap: 16px;
+                        align-items: stretch;
+                        text-align: center;
+                        gap: 20px;
+                    }
+                    .refresh-btn {
+                        width: 100%;
+                        justify-content: center;
                     }
                     .status-grid {
-                        grid-template-columns: 1fr;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 12px;
+                    }
+                    .card {
+                        padding: 16px;
+                    }
+                    .card-header {
+                        padding: 16px;
                     }
                     .hide-mobile {
                         display: none;
                     }
+                    .table {
+                        min-width: 450px;
+                    }
+                    .title {
+                        justify-content: center;
+                    }
+                }
+
+                @media (max-width: 500px) {
+                    .status-grid {
+                        grid-template-columns: 1fr;
+                        gap: 10px;
+                    }
+                    .card {
+                        padding: 12px;
+                    }
                     .card-header {
-                        padding: 15px 20px;
+                        padding: 12px;
                         flex-direction: column;
-                        align-items: flex-start;
-                        gap: 12px;
+                        align-items: center;
+                        text-align: center;
+                        gap: 10px;
+                    }
+                    .card-title {
+                        font-size: 16px;
                     }
                     .log-toggle {
                         width: 100%;
                     }
                     .log-btn {
                         flex: 1;
+                        padding: 6px 8px;
+                    }
+                    .header-row {
+                        margin-bottom: 24px;
+                        padding: 0 4px;
                     }
                     .title {
-                        font-size: 24px;
+                        font-size: 22px;
                     }
                 }
             `}</style>
@@ -406,18 +457,18 @@ function StatusCard({ title, value, status, icon }: { title: string, value: stri
 
     return (
         <div style={{ 
-            background: '#ffffff', borderRadius: 16, padding: 20, border: '1px solid #e5e7eb',
-            display: 'flex', alignItems: 'center', gap: 16
+            background: '#ffffff', borderRadius: 16, padding: '16px 20px', border: '1px solid #e5e7eb',
+            display: 'flex', alignItems: 'center', gap: 12, height: '100%'
         }}>
             <div style={{ 
-                width: 48, height: 48, borderRadius: 12, background: `${getStatusColor()}15`,
+                flexShrink: 0, width: 42, height: 42, borderRadius: 12, background: `${getStatusColor()}15`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', color: getStatusColor()
             }}>
                 {icon}
             </div>
-            <div>
-                <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>{title}</div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>{value}</div>
+            <div style={{ minWidth: 0 }}>
+                <div style={{ fontSize: 12, color: '#6b7280', fontWeight: 500, marginBottom: 2 }}>{title}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</div>
             </div>
         </div>
     )
@@ -425,12 +476,12 @@ function StatusCard({ title, value, status, icon }: { title: string, value: stri
 
 function MetricRow({ label, value, icon }: { label: string, value: string, icon: any }) {
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 14 }}>
-                {icon}
-                {label}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 13, minWidth: 0 }}>
+                <span style={{ flexShrink: 0 }}>{icon}</span>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span>
             </div>
-            <div style={{ fontWeight: 600, fontSize: 14 }}>{value}</div>
+            <div style={{ fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap' }}>{value}</div>
         </div>
     )
 }

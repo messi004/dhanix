@@ -25,11 +25,10 @@ export function generateDepositAddress(index: number): { address: string; privat
         return { address: wallet.address, privateKey: wallet.privateKey }
     }
 
-    const hdNode = HDNodeWallet.fromPhrase(seed)
-    // BIP44 path: m/44'/60'/0'/0/index
+    // Correct BIP44 derivation in ethers v6
     const path = `m/44'/60'/0'/0/${index}`
-    const child = hdNode.derivePath(path)
-    return { address: child.address, privateKey: child.privateKey }
+    const wallet = HDNodeWallet.fromPhrase(seed, undefined, path)
+    return { address: wallet.address, privateKey: wallet.privateKey }
 }
 
 export async function sendUSDT(

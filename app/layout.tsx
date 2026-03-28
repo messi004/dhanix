@@ -13,22 +13,40 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'Dhanix – Crypto Staking Platform | Earn Up To 24% APY on USDT',
-  description: 'Dhanix is a secure USDT BEP20 staking platform where you can earn up to 24% annual interest. Stake your USDT, refer friends, and earn rewards.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://dhanix.com'),
+  title: {
+    default: 'Dhanix – Crypto Staking Platform',
+    template: '%s | Dhanix'
+  },
+  description: 'Dhanix is a secure USDT BEP20 staking platform. Stake your USDT, refer friends, and earn rewards.',
   keywords: 'crypto staking, USDT staking, BEP20, passive income, cryptocurrency, Dhanix',
+  alternates: {
+    canonical: './',
+  },
   openGraph: {
     title: 'Dhanix – Crypto Staking Platform',
-    description: 'Earn up to 24% APY on your USDT with Dhanix. Secure, transparent, and rewarding.',
+    description: 'Earn stable APY on your USDT with Dhanix. Secure, transparent, and rewarding.',
     type: 'website',
-    url: process.env.NEXT_PUBLIC_APP_URL || 'https://dhanix.com',
     siteName: 'Dhanix',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Dhanix Crypto Staking',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Dhanix – Crypto Staking Platform',
-    description: 'Earn up to 24% APY on your USDT with Dhanix.',
+    description: 'Earn stable APY on your USDT with Dhanix.',
+    images: ['/og-image.png'],
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export default function RootLayout({
@@ -36,27 +54,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FinancialService',
-    name: 'Dhanix Crypto Staking',
-    url: process.env.NEXT_PUBLIC_APP_URL || 'https://dhanix.com',
-    description: 'Earn up to 24% APY on your USDT with Dhanix secure crypto staking platform.',
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-      category: 'Crypto Staking'
-    }
-  }
-
   return (
     <html lang="en" className={inter.className}>
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
         {children}
         <Toaster
           position="top-right"

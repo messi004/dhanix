@@ -4,8 +4,30 @@ import {
   Shield, TrendingUp, Users, Wallet, ChevronDown, ArrowRight,
   Zap, Lock, Gift, Send
 } from 'lucide-react'
+import Footer from '@/components/Footer'
+import LandingNav from '@/components/LandingNav'
+import ContactForm from '@/components/ContactForm'
 import { getSetting } from '@/lib/settings'
 import { getCurrentUser } from '@/lib/auth'
+import { Metadata } from 'next'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const interestRate = await getSetting('interest_rate')
+  const description = `Earn up to ${interestRate}% APY on your USDT with Dhanix secure crypto staking platform. Passive income made simple on BSC.`
+
+  return {
+    title: `Earn Up To ${interestRate}% APY on USDT Staking`,
+    description,
+    openGraph: {
+      title: `Dhanix – Earn Up To ${interestRate}% APY on USDT`,
+      description,
+    },
+    twitter: {
+      title: `Dhanix – Earn Up To ${interestRate}% APY on USDT`,
+      description,
+    }
+  }
+}
 
 export default async function LandingPage() {
   const user = await getCurrentUser()
@@ -23,33 +45,50 @@ export default async function LandingPage() {
   const referralPercent = await getSetting('referral_percentage')
   const welcomeBonusPercent = await getSetting('welcome_bonus_percentage')
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://dhanix.com'
+
+  const financialServiceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FinancialService',
+    name: 'Dhanix Crypto Staking',
+    url: baseUrl,
+    description: `Earn up to ${interestRate}% APY on your USDT with Dhanix secure crypto staking platform.`,
+    brand: 'Dhanix',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+      category: 'Crypto Staking'
+    }
+  }
+
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Dhanix',
+    url: baseUrl,
+    logo: `${baseUrl}/icon.png`,
+    sameAs: [
+      // Add social links if available
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      url: `${baseUrl}/contact`
+    }
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#ffffff' }}>
-      {/* Nav */}
-      <nav className="landing-nav" style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid #e5e7eb',
-        padding: '0 24px', height: '70px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        maxWidth: '1200px', margin: '0 auto', width: '100%'
-      }}>
-        <div className="landing-nav-inner" style={{ display: 'flex', alignItems: 'center', gap: '24px', width: '100%', maxWidth: '1200px', margin: '0 auto', justifyContent: 'space-between' }}>
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: 'var(--accent-gradient)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontWeight: 900, fontSize: 18, color: 'white'
-            }}>D</div>
-            <span style={{ fontWeight: 800, fontSize: 22, color: '#1a1a2e', letterSpacing: '-0.5px' }}>Dhanix</span>
-          </Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Link href="/login" className="btn btn-secondary btn-sm">Login</Link>
-            <Link href="/register" className="btn btn-primary btn-sm">Get Started</Link>
-          </div>
-        </div>
-      </nav>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(financialServiceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <LandingNav />
 
       {/* Hero */}
       <section style={{
@@ -93,7 +132,7 @@ export default async function LandingPage() {
             <Link href="/register" className="btn btn-primary btn-lg">
               Start Staking <ArrowRight size={18} />
             </Link>
-            <a href="#how-it-works" className="btn btn-secondary btn-lg">Learn More</a>
+            <Link href="/about" className="btn btn-secondary btn-lg">Learn More</Link>
           </div>
 
           <div style={{
@@ -230,15 +269,19 @@ export default async function LandingPage() {
         </Link>
       </section>
 
+      {/* Contact Section */}
+      <section id="contact" style={{ padding: '80px 24px', maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
+        <h2 className="landing-section-heading" style={{ fontSize: 32, fontWeight: 800, marginBottom: 16, letterSpacing: '-0.5px', color: '#1a1a2e' }}>
+          Get in Touch
+        </h2>
+        <p style={{ color: '#64648b', fontSize: 16, marginBottom: 40 }}>
+          Have questions? Our team is here to help you.
+        </p>
+        <ContactForm />
+      </section>
+
       {/* Footer */}
-      <footer style={{
-        padding: '40px 24px', borderTop: '1px solid #e5e7eb',
-        textAlign: 'center', color: '#9ca3af', fontSize: 13,
-        background: '#ffffff',
-      }}>
-        <p style={{ margin: 0, marginBottom: 8 }}>© 2026 Dhanix. All rights reserved. USDT BEP20 Staking Platform.</p>
-        {/* <p style={{ margin: 0 }}>Design & Developed by <a href="https://messidev.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Messi</a></p> */}
-      </footer>
+      <Footer />
     </div>
   )
 }

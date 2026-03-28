@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import {
     LayoutDashboard, Users, ArrowDownCircle, ArrowUpCircle,
-    Layers, History, LifeBuoy, Settings, LogOut, Menu, X, Shield, Activity
+    Layers, History, LifeBuoy, Settings, LogOut, Menu, X, Shield, Activity, Mail
 } from 'lucide-react'
 
 interface User {
@@ -21,6 +21,7 @@ const navItems = [
     { href: '/admin/pools', icon: Layers, label: 'Pools' },
     { href: '/admin/transactions', icon: History, label: 'Transactions' },
     { href: '/admin/tickets', icon: LifeBuoy, label: 'Tickets' },
+    { href: '/admin/messages', icon: Mail, label: 'Contact Messages' },
     { href: '/admin/system/health', icon: Activity, label: 'System Health' },
     { href: '/admin/settings', icon: Settings, label: 'Settings' },
 ]

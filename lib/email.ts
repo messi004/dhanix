@@ -227,3 +227,41 @@ export async function sendTransferReceivedEmail(recipientEmail: string, senderEm
         return false
     }
 }
+
+export async function sendContactReplyEmail(
+    email: string,
+    name: string | null,
+    originalMessage: string,
+    replyText: string
+): Promise<boolean> {
+    const title = 'Support Reply';
+    const content = `
+        <p>Hello ${name || 'there'},</p>
+        <p>Thank you for contacting <strong>Dhanix</strong>. This is a follow-up response to your recent inquiry.</p>
+        
+        <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #7c3aed;">
+            <p style="margin: 0 0 10px; font-size: 13px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Your Message:</p>
+            <p style="margin: 0; font-size: 14px; color: #4b5563; font-style: italic;">"${originalMessage}"</p>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <p style="margin: 0 0 12px; font-size: 15px; color: #18181b; line-height: 1.6;">${replyText}</p>
+        </div>
+        
+        <p>If you have any further questions or need additional assistance, please don't hesitate to reach out.</p>
+        <p>Best regards,<br>The Dhanix Team</p>
+    `;
+
+    try {
+        await transporter.sendMail({
+            from: '"Dhanix Support" <' + (process.env.SMTP_USER || 'support@dhanix.com') + '>',
+            to: email,
+            subject: 'Re: Dhanix Inquiry',
+            html: getBaseEmailTemplate(title, content),
+        })
+        return true
+    } catch (error) {
+        console.error('Contact reply email send error:', error)
+        return false
+    }
+}

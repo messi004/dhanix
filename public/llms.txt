@@ -1,0 +1,22 @@
+# Dhanix - Crypto Staking Platform
+
+Dhanix is a secure and transparent USDT staking platform built on the Binance Smart Chain (BSC). Users can earn stable returns by staking USDT BEP20 in various pools.
+
+## Core Features
+- **Secure Staking:** Industry-standard encryption and secure wallet integration.
+- **USDT BEP20:** Operates exclusively on the Binance Smart Chain for low fees and fast transactions.
+- **Referral Rewards:** 3-level deep referral system for community growth.
+- **Welcome Bonus:** Instant bonus on the first staking pool.
+- **Zero-Fee Transfers:** Fast USDT transfers between users on the platform.
+
+## Public Routes
+- [Homepage](https://dhanix.com/) - Overview and main staking features.
+- [About Us](https://dhanix.com/about) - Mission, vision, and team values.
+- [Contact Support](https://dhanix.com/contact) - Support channels and contact form.
+- [Privacy Policy](https://dhanix.com/privacy-policy) - Data handling and blockchain transparency.
+- [Terms of Service](https://dhanix.com/terms) - User agreement and risk disclosure.
+
+## Technical Details
+- **Network:** Binance Smart Chain (BSC)
+- **Token:** USDT (BEP20)
+- **Audit Basis:** High transparency with all transactions traceable on BscScan.
