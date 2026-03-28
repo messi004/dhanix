@@ -11,8 +11,10 @@ import { getSetting } from '@/lib/settings'
 import { getCurrentUser } from '@/lib/auth'
 import { Metadata } from 'next'
 
+const DEFAULT_INTEREST_RATE = '5'
+
 export async function generateMetadata(): Promise<Metadata> {
-  const interestRate = await getSetting('interest_rate')
+  const interestRate = (await getSetting('interest_rate')) || DEFAULT_INTEREST_RATE
   const description = `Earn up to ${interestRate}% APY on your USDT with Dhanix secure crypto staking platform. Passive income made simple on BSC.`
 
   return {
@@ -29,13 +31,17 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
+function safeJsonLd(obj: Record<string, unknown>): string {
+  return JSON.stringify(obj).replace(/</g, '\\u003c')
+}
+
 export default async function LandingPage() {
   const user = await getCurrentUser()
   if (user) {
     redirect('/dashboard')
   }
 
-  const interestRate = await getSetting('interest_rate')
+  const interestRate = (await getSetting('interest_rate')) || DEFAULT_INTEREST_RATE
   const minStake = await getSetting('min_stake')
   const minDeposit = await getSetting('min_deposit')
   const maxDeposit = await getSetting('max_deposit')
@@ -82,11 +88,11 @@ export default async function LandingPage() {
     <div style={{ minHeight: '100vh', background: '#ffffff' }}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(financialServiceSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(financialServiceSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(organizationSchema) }}
       />
       <LandingNav />
 

@@ -3,9 +3,9 @@
 Dhanix is a secure and transparent USDT staking platform built on the Binance Smart Chain (BSC). Users can earn stable returns by staking USDT BEP20 in various pools.
 
 ## Core Features
-- **Secure Staking:** Industry-standard encryption and secure wallet integration.
+- **Secure Staking:** Secure HD wallet integration for deposit address generation.
 - **USDT BEP20:** Operates exclusively on the Binance Smart Chain for low fees and fast transactions.
-- **Referral Rewards:** 3-level deep referral system for community growth.
+- **Referral Rewards:** Referral reward system tied strictly to staking pool creation, not mere recruitment. *Legal Disclaimer: This program is currently under legal review to ensure compliance with financial promotion rules. It is void where prohibited by law and explicitly excludes residents of the US, UK, and Canada. Bonus generation may be paused or restricted during this review.*
 - **Welcome Bonus:** Instant bonus on the first staking pool.
 - **Zero-Fee Transfers:** Fast USDT transfers between users on the platform.
 
@@ -16,7 +16,11 @@ Dhanix is a secure and transparent USDT staking platform built on the Binance Sm
 - [Privacy Policy](https://dhanix.com/privacy-policy) - Data handling and blockchain transparency.
 - [Terms of Service](https://dhanix.com/terms) - User agreement and risk disclosure.
 
+## Security & Verification
+To protect against phishing and impersonation, always verify that you are connecting to **https://dhanix.com**.
+Check for a valid HTTPS certificate. We will never ask for your private keys or seed phrases.
+
 ## Technical Details
 - **Network:** Binance Smart Chain (BSC)
 - **Token:** USDT (BEP20)
-- **Audit Basis:** High transparency with all transactions traceable on BscScan.
+- **Audit Status:** **Warning:** Currently, NO independent third-party smart contract audit has been performed. Users deposit funds entirely at their own risk. While transactions are traceable on BscScan, the contracts remain unaudited.

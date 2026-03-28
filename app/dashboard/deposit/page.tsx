@@ -15,6 +15,7 @@ export default function DepositPage() {
     const [newDeposit, setNewDeposit] = useState<Deposit | null>(null)
     const [minDeposit, setMinDeposit] = useState('10')
     const [maxDeposit, setMaxDeposit] = useState('1000')
+    const [acknowledged, setAcknowledged] = useState(false)
 
     useEffect(() => {
         fetch('/api/deposit').then(r => r.json()).then(d => setDeposits(d.deposits || []))
@@ -73,7 +74,15 @@ export default function DepositPage() {
                             <label>Amount (USDT)</label>
                             <input className="input" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder={`Min ${minDeposit}, Max ${maxDeposit}`} min={minDeposit} max={maxDeposit} step="any" required />
                         </div>
-                        <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%' }}>
+                        
+                        <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', background: 'rgba(239, 68, 68, 0.05)', padding: 12, borderRadius: 8, border: '1px solid rgba(239, 68, 68, 0.2)', marginBottom: 4 }}>
+                            <input type="checkbox" id="deposit-ack" checked={acknowledged} onChange={e => setAcknowledged(e.target.checked)} style={{ marginTop: 4, cursor: 'pointer' }} />
+                            <label htmlFor="deposit-ack" style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5, cursor: 'pointer' }}>
+                                <strong style={{color: 'var(--danger)'}}>Warning:</strong> I acknowledge that these smart contracts are currently <strong>unaudited</strong> and I am depositing entirely at my own risk.
+                            </label>
+                        </div>
+
+                        <button type="submit" className="btn btn-primary" disabled={loading || !acknowledged} style={{ width: '100%' }}>
                             {loading ? <span className="spinner" /> : 'Generate Deposit Address'}
                         </button>
                     </form>

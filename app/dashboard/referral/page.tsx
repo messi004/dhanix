@@ -21,9 +21,15 @@ export default function ReferralPage() {
     const [data, setData] = useState<ReferralData | null>(null)
     const [loading, setLoading] = useState(true)
 
+    const REFERRAL_REWARDS_ENABLED = process.env.NEXT_PUBLIC_REFERRAL_REWARDS_ENABLED !== 'false'
+
     useEffect(() => {
+        if (!REFERRAL_REWARDS_ENABLED) {
+            setLoading(false)
+            return
+        }
         fetch('/api/referral').then(r => r.json()).then(setData).finally(() => setLoading(false))
-    }, [])
+    }, [REFERRAL_REWARDS_ENABLED])
 
     const copyLink = () => {
         if (data?.referralLink) {
@@ -48,11 +54,27 @@ export default function ReferralPage() {
         }
     }
 
+    if (!REFERRAL_REWARDS_ENABLED) {
+        return (
+            <div className="animate-fade-in">
+                <div className="page-header"><h1>Referral Program</h1></div>
+                <div className="card" style={{ textAlign: 'center', padding: '40px 20px' }}>
+                    <h3 style={{ fontSize: 18, color: 'var(--danger)', marginBottom: 12 }}>Program Paused</h3>
+                    <p style={{ color: 'var(--text-muted)' }}>The referral program is currently paused pending legal review. Please check back later.</p>
+                </div>
+            </div>
+        )
+    }
+
     if (loading) return <div className="loading-page"><div className="spinner" /></div>
 
     return (
         <div className="animate-fade-in">
             <div className="page-header"><h1>Referral Program</h1></div>
+
+            <div style={{ background: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.3)', padding: 16, borderRadius: 12, marginBottom: 24, fontSize: 13, color: 'var(--warning)', lineHeight: 1.6 }}>
+                <strong>Legal Notice:</strong> This program is currently under legal review to ensure compliance with financial promotion rules. It is void where prohibited by law and explicitly excludes residents of the US, UK, and Canada. Bonus generation may be paused or restricted during this review.
+            </div>
 
             {/* Link Card - Mobile optimized */}
             <div className="card" style={{

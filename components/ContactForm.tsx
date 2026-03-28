@@ -21,9 +21,17 @@ export default function ContactForm() {
                 body: JSON.stringify({ name, email, message }),
             })
 
-            const data = await res.json()
-
-            if (!res.ok) throw new Error(data.error || 'Failed to send message')
+            if (!res.ok) {
+                const text = await res.text()
+                let errorMessage = 'Failed to send message'
+                try {
+                    const data = JSON.parse(text)
+                    errorMessage = data?.error || errorMessage
+                } catch {
+                    if (text) errorMessage = text
+                }
+                throw new Error(errorMessage)
+            }
 
             toast.success('Message sent! We will contact you soon.')
             setName('')
@@ -39,8 +47,9 @@ export default function ContactForm() {
     return (
         <form onSubmit={handleSubmit} className="card" style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
             <div className="input-group">
-                <label style={{ fontSize: '14px', fontWeight: 600, color: '#1a1a2e', marginBottom: '8px', display: 'block' }}>Name (Optional)</label>
+                <label htmlFor="contact-name" style={{ fontSize: '14px', fontWeight: 600, color: '#1a1a2e', marginBottom: '8px', display: 'block' }}>Name (Optional)</label>
                 <input 
+                    id="contact-name"
                     type="text" 
                     className="input" 
                     placeholder="Your Name" 
@@ -49,8 +58,9 @@ export default function ContactForm() {
                 />
             </div>
             <div className="input-group">
-                <label style={{ fontSize: '14px', fontWeight: 600, color: '#1a1a2e', marginBottom: '8px', display: 'block' }}>Email Address</label>
+                <label htmlFor="contact-email" style={{ fontSize: '14px', fontWeight: 600, color: '#1a1a2e', marginBottom: '8px', display: 'block' }}>Email Address</label>
                 <input 
+                    id="contact-email"
                     type="email" 
                     className="input" 
                     placeholder="name@example.com" 
@@ -60,8 +70,9 @@ export default function ContactForm() {
                 />
             </div>
             <div className="input-group">
-                <label style={{ fontSize: '14px', fontWeight: 600, color: '#1a1a2e', marginBottom: '8px', display: 'block' }}>Message</label>
+                <label htmlFor="contact-message" style={{ fontSize: '14px', fontWeight: 600, color: '#1a1a2e', marginBottom: '8px', display: 'block' }}>Message</label>
                 <textarea 
+                    id="contact-message"
                     className="input" 
                     rows={4} 
                     placeholder="How can we help?" 

@@ -76,6 +76,18 @@ export default function AdminMessagesPage() {
         }
     }
 
+    const handleMessageSelect = (m: ContactMessage) => {
+        setSelectedMessage(m)
+        setReplyText('')
+    }
+
+    const handleMessageKeyDown = (e: React.KeyboardEvent, m: ContactMessage) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            handleMessageSelect(m)
+        }
+    }
+
     if (loading) return <div className="loading-page"><div className="spinner" /></div>
 
     return (
@@ -97,10 +109,10 @@ export default function AdminMessagesPage() {
                             messages.map((m) => (
                                 <div 
                                     key={m.id} 
-                                    onClick={() => {
-                                        setSelectedMessage(m)
-                                        setReplyText('')
-                                    }}
+                                    onClick={() => handleMessageSelect(m)}
+                                    onKeyDown={(e) => handleMessageKeyDown(e, m)}
+                                    tabIndex={0}
+                                    role="button"
                                     style={{ 
                                         padding: '16px 20px', 
                                         borderBottom: '1px solid #f1f5f9', 
@@ -145,6 +157,7 @@ export default function AdminMessagesPage() {
                             </div>
                             <button 
                                 onClick={() => deleteMessage(selectedMessage.id)}
+                                aria-label="Delete message"
                                 style={{ background: '#fee2e2', color: '#ef4444', border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer' }}
                             >
                                 <Trash2 size={18} />
@@ -180,7 +193,7 @@ export default function AdminMessagesPage() {
                                     whiteSpace: 'pre-wrap',
                                     borderLeft: '3px solid #bbf7d0'
                                 }}>
-                                    {selectedMessage.replyText}
+                                    {selectedMessage.replyText || '(no reply provided)'}
                                 </div>
                             </div>
                         ) : (

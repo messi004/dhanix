@@ -11,6 +11,12 @@ export async function GET() {
             return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
         }
 
+        const REFERRAL_REWARDS_ENABLED = process.env.NEXT_PUBLIC_REFERRAL_REWARDS_ENABLED !== 'false'
+
+        if (!REFERRAL_REWARDS_ENABLED) {
+            return NextResponse.json({ error: 'Referral program is currently paused pending legal review.' }, { status: 403 })
+        }
+
         const referrals = await prisma.referral.findMany({
             where: { referrerId: user.id },
             include: {

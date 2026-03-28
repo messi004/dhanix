@@ -6,10 +6,6 @@ import { FileQuestion } from 'lucide-react'
 export default function NotFound() {
     return (
         <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', flexDirection: 'column' }}>
-            <head>
-                <title>404 - Page Not Found | Dhanix</title>
-                <meta name="robots" content="noindex, follow" />
-            </head>
             <LandingNav />
             
             <main style={{ 

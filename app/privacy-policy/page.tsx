@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
             
             <main style={{ padding: '120px 24px 80px', maxWidth: '800px', margin: '0 auto' }}>
                 <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)', fontWeight: 800, color: '#1a1a2e', marginBottom: '40px', letterSpacing: '-0.5px' }}>
-                    Privacy <span style={{ background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Policy</span>
+                    Privacy <span style={{ background: 'var(--accent-gradient)', backgroundClip: 'text', WebkitBackgroundClip: 'text', color: 'transparent', WebkitTextFillColor: 'transparent' }}>Policy</span>
                 </h1>
                 
                 <section style={{ marginBottom: '32px' }}>

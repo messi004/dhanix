@@ -15,9 +15,9 @@ export default function Footer() {
                     textAlign: 'left',
                     marginBottom: '40px'
                 }}>
-                    <div style={{ gridColumn: 'span 2' }}>
+                    <div className="footer-brand">
                         <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-                            <div style={{
+                            <div aria-hidden="true" style={{
                                 width: 32, height: 32, borderRadius: 8,
                                 background: 'var(--accent-gradient)',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',

@@ -1,0 +1,83 @@
+.main {
+    padding: 120px 24px 80px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.heading {
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text-heading, #1a1a2e);
+    margin-bottom: 24px;
+    letter-spacing: -0.75px;
+}
+
+.gradientText {
+    background: var(--accent-gradient, linear-gradient(135deg, #7c3aed, #a78bfa, #c084fc));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.intro {
+    font-size: 18px;
+    color: var(--text-muted-body, #64648b);
+    line-height: 1.7;
+    margin-bottom: 48px;
+}
+
+.featureGrid {
+    display: grid;
+    gap: 32px;
+    margin-bottom: 64px;
+}
+
+.featureRow {
+    display: flex;
+    gap: 20px;
+}
+
+.iconContainer {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--accent-bg, rgba(124, 58, 237, 0.08));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-primary, #7c3aed);
+    flex-shrink: 0;
+}
+
+.featureTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-heading, #1a1a2e);
+    margin-bottom: 8px;
+}
+
+.featureDesc {
+    color: var(--text-muted-body, #64648b);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.visionCard {
+    padding: 40px;
+    text-align: center;
+}
+
+.visionTitle {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-heading, #1a1a2e);
+    margin-bottom: 16px;
+}
+
+.visionDesc {
+    color: var(--text-muted-body, #64648b);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0;
+}

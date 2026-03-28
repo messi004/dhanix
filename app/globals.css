@@ -560,3 +560,14 @@ tbody tr:hover {
     font-size: 14px;
   }
 }
+
+/* Footer */
+.footer-brand {
+  grid-column: span 2;
+}
+
+@media (max-width: 640px) {
+  .footer-brand {
+    grid-column: span 1;
+  }
+}

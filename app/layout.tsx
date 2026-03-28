@@ -5,6 +5,17 @@ import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({ subsets: ['latin'] })
 
+function parseSafeUrl(envUrl: string | undefined, fallback: string): URL {
+  if (envUrl) {
+    try {
+      return new URL(envUrl)
+    } catch {
+      // Malformed NEXT_PUBLIC_APP_URL, fall back to default
+    }
+  }
+  return new URL(fallback)
+}
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -13,7 +24,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://dhanix.com'),
+  metadataBase: parseSafeUrl(process.env.NEXT_PUBLIC_APP_URL, 'https://dhanix.com'),
   title: {
     default: 'Dhanix – Crypto Staking Platform',
     template: '%s | Dhanix'

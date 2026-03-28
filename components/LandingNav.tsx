@@ -7,8 +7,7 @@ export default function LandingNav() {
             background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(20px)',
             borderBottom: '1px solid #e5e7eb',
             padding: '0 24px', height: '70px',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            maxWidth: '1200px', margin: '0 auto', width: '100%'
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
             <div className="landing-nav-inner" style={{ display: 'flex', alignItems: 'center', gap: '24px', width: '100%', maxWidth: '1200px', margin: '0 auto', justifyContent: 'space-between' }}>
                 <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>

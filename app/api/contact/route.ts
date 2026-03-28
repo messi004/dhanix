@@ -58,7 +58,10 @@ export async function DELETE(req: Request) {
         })
 
         return NextResponse.json({ success: true, message: 'Message deleted' })
-    } catch (err) {
+    } catch (err: any) {
+        if (err?.code === 'P2025') {
+            return NextResponse.json({ error: 'Message not found' }, { status: 404 })
+        }
         console.error('Delete contact message error:', err)
         return NextResponse.json({ error: 'Failed to delete message' }, { status: 500 })
     }

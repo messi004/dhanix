@@ -1,5 +1,15 @@
 import nodemailer from 'nodemailer'
 
+function escapeHtml(str: string | null | undefined): string {
+    if (!str) return ''
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+}
+
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
@@ -112,11 +122,11 @@ export async function sendTransactionNotification(
         
         <div class="box" style="background: #f8fafc; border-color: #cbd5e1;">
             <p class="box-text" style="color: #475569;">Transaction Amount</p>
-            <div class="box-value" style="color: ${color};">${amount} USDT</div>
+            <div class="box-value" style="color: ${color};">${escapeHtml(amount)} USDT</div>
         </div>
         
         <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <p style="margin: 0; font-size: 14px;"><strong>Details:</strong> ${description}</p>
+            <p style="margin: 0; font-size: 14px;"><strong>Details:</strong> ${escapeHtml(description)}</p>
         </div>
         
         <p>If you have any questions, please contact our support team.</p>
@@ -172,11 +182,11 @@ export async function sendTransferSentEmail(senderEmail: string, recipientEmail:
         
         <div class="box" style="background: #f8fafc; border-color: #cbd5e1;">
             <p class="box-text" style="color: #475569;">Amount Sent</p>
-            <div class="box-value" style="color: #dc2626;">-${amount} USDT</div>
+            <div class="box-value" style="color: #dc2626;">-${escapeHtml(String(amount))} USDT</div>
         </div>
         
         <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <p style="margin: 0; font-size: 14px;"><strong>Recipient:</strong> ${recipientEmail}</p>
+            <p style="margin: 0; font-size: 14px;"><strong>Recipient:</strong> ${escapeHtml(recipientEmail)}</p>
         </div>
         
         <p>Thank you for using Dhanix.</p>
@@ -204,11 +214,11 @@ export async function sendTransferReceivedEmail(recipientEmail: string, senderEm
         
         <div class="box" style="background: #fdfaf0; border-color: #fde68a;">
             <p class="box-text" style="color: #713f12;">Amount Received</p>
-            <div class="box-value" style="color: #16a34a;">+${amount} USDT</div>
+            <div class="box-value" style="color: #16a34a;">+${escapeHtml(String(amount))} USDT</div>
         </div>
         
         <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <p style="margin: 0; font-size: 14px;"><strong>Sender:</strong> ${senderEmail}</p>
+            <p style="margin: 0; font-size: 14px;"><strong>Sender:</strong> ${escapeHtml(senderEmail)}</p>
         </div>
         
         <p>The funds are now available in your Dhanix wallet.</p>
@@ -236,16 +246,16 @@ export async function sendContactReplyEmail(
 ): Promise<boolean> {
     const title = 'Support Reply';
     const content = `
-        <p>Hello ${name || 'there'},</p>
+        <p>Hello ${escapeHtml(name) || 'there'},</p>
         <p>Thank you for contacting <strong>Dhanix</strong>. This is a follow-up response to your recent inquiry.</p>
         
         <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #7c3aed;">
             <p style="margin: 0 0 10px; font-size: 13px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Your Message:</p>
-            <p style="margin: 0; font-size: 14px; color: #4b5563; font-style: italic;">"${originalMessage}"</p>
+            <p style="margin: 0; font-size: 14px; color: #4b5563; font-style: italic;">"${escapeHtml(originalMessage)}"</p>
         </div>
 
         <div style="margin-bottom: 30px;">
-            <p style="margin: 0 0 12px; font-size: 15px; color: #18181b; line-height: 1.6;">${replyText}</p>
+            <p style="margin: 0 0 12px; font-size: 15px; color: #18181b; line-height: 1.6;">${escapeHtml(replyText)}</p>
         </div>
         
         <p>If you have any further questions or need additional assistance, please don't hesitate to reach out.</p>

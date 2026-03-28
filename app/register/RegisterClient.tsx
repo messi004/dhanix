@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'react-hot-toast'
@@ -18,13 +18,25 @@ function RegisterForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const ref = searchParams.get('ref') || ''
+    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+    useEffect(() => {
+        return () => {
+            if (timerRef.current) clearInterval(timerRef.current)
+        }
+    }, [])
 
     // Countdown timer for resend
     const startCountdown = () => {
+        if (timerRef.current) clearInterval(timerRef.current)
         setCountdown(60)
-        const timer = setInterval(() => {
+        timerRef.current = setInterval(() => {
             setCountdown(prev => {
-                if (prev <= 1) { clearInterval(timer); return 0 }
+                if (prev <= 1) {
+                    if (timerRef.current) clearInterval(timerRef.current)
+                    timerRef.current = null
+                    return 0
+                }
                 return prev - 1
             })
         }, 1000)
@@ -219,7 +231,7 @@ function RegisterForm() {
                             <label>Create Password</label>
                             <div style={{ position: 'relative' }}>
                                 <input className="input" type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 8 characters" required minLength={8} />
-                                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'} style={{
                                     position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
                                     background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)'
                                 }}>
